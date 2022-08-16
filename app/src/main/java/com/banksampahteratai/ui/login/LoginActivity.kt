@@ -2,7 +2,6 @@ package com.banksampahteratai.ui.login
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import com.banksampahteratai.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
