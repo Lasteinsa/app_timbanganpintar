@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Timbangan Pintar</string>
+    <string name="tv_username">Username</string>
+    <string name="tv_password">Password</string>
+    <string name="tv_header_login">Welcomeback</string>
+    <string name="btn_login">Login</string>
 </resources>
