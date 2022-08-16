@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
+
+    <color name="teratai_main">#50CB93</color>
+    <color name="teratai_secondary">#71EFA3</color>
+    <color name="teratai_tertiary">#ACFFAD</color>
+
+    <color name="teratai_branch_main">#6ECB63</color>
+    <color name="teratai_branch_secondary">#B1E693</color>
 </resources>
