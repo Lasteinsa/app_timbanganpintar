@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="transparent_80">#CD000000</color>
 
     <color name="teratai_main">#50CB93</color>
     <color name="teratai_secondary">#71EFA3</color>

@@ -61,6 +61,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun isLoading(load: Boolean) {
+        if(load) {
+            binding.loadingInfo.visibility = View.VISIBLE
+            binding.loadingInfo.bringToFront()
+        } else {
+            binding.loadingInfo.visibility = View.INVISIBLE
+        }
+    }
+
     private fun setupAction() {
         binding.btnLogin.setOnClickListener {
             tryLogin()
@@ -79,6 +88,7 @@ class LoginActivity : AppCompatActivity() {
                 binding.inpPassword.error   = getString(R.string.password_cannot_empty)
             }
             else -> {
+                isLoading(true)
                 this.currentFocus?.let {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                     imm?.hideSoftInputFromWindow(it.windowToken, 0)
@@ -94,6 +104,7 @@ class LoginActivity : AppCompatActivity() {
                         call: Call<ResponseLogin>,
                         response: Response<ResponseLogin>
                     ) {
+                        isLoading(false)
                         val responseBody    = response.body()
                         if(responseBody?.error == false) {
                             loginViewModel.login(responseBody)
@@ -122,6 +133,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                     override fun onFailure(call: Call<ResponseLogin>, t: Throwable) {
+                        isLoading(false)
                         Toast.makeText(this@LoginActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
