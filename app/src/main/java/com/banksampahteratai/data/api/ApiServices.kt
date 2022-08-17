@@ -13,10 +13,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 interface ApiServices {
-    @Headers("Content-Type:application/json")
+    @Multipart
     @POST("login/admin")
     fun login(
-        @Body info: UserSignIn
+        @Part("username") username: RequestBody,
+        @Part("password") password: RequestBody
     ): Call<ResponseLogin>
 }
 

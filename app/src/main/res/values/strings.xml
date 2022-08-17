@@ -2,6 +2,10 @@
     <string name="app_name">Timbangan Pintar</string>
     <string name="tv_username">Username</string>
     <string name="tv_password">Password</string>
-    <string name="tv_header_login">Welcomeback</string>
+    <string name="tv_header_login">Selamat Datang</string>
     <string name="btn_login">Login</string>
+    <string name="username_cannot_empty">username tidak boleh kosong</string>
+    <string name="password_cannot_empty">password tidak boleh kosong</string>
+    <string name="wrong_username_or_password">Username atau Password Salah</string>
+    <string name="server_fault">Kesalahan pada server</string>
 </resources>
