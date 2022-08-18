@@ -11,4 +11,5 @@
     <string name="session_ended">Sesi telah berakhir</string>
     <string name="session_ended_please_login">Sesi admin telah berakhir, silahkan login kembali</string>
     <string name="unknown_error">Unknown Error</string>
+    <string name="test">test</string>
 </resources>
