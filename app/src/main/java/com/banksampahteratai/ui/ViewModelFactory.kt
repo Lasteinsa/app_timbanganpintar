@@ -13,7 +13,7 @@ class ViewModelFactory(private val preference: DataPreference, private val conte
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
-                MainViewModel() as T
+                MainViewModel(preference) as T
             }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(preference) as T

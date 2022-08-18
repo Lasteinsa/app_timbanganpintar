@@ -19,6 +19,12 @@ interface ApiServices {
         @Part("username") username: RequestBody,
         @Part("password") password: RequestBody
     ): Call<ResponseLogin>
+
+    @GET("admin/sessioncheck")
+    fun sessionCheck(
+        @Header("token")
+        token: String
+    ): Call<ResponseSessionAuth>
 }
 
 class ApiConfig {

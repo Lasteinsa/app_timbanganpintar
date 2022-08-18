@@ -7,3 +7,10 @@ data class ResponseLogin(
 	val token: String? = null
 )
 
+data class ResponseSessionAuth(
+	val success: Boolean? = null,
+	val error: Boolean? = null,
+	val status: Int? = null,
+	val message: String? = null
+)
+
