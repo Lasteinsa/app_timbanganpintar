@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -70,6 +69,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun alertInfo(isShow: Boolean) {
+        val loginAlertShow =
+            ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 1f).setDuration(500)
+        val loginAlertHide =
+            ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 0f).setDuration(500)
+
+        if(isShow) {
+            loginAlertShow.start()
+        } else {
+            loginAlertHide.start()
+        }
+    }
+
     private fun setupAction() {
         binding.btnLogin.setOnClickListener {
             tryLogin()
@@ -113,11 +125,7 @@ class LoginActivity : AppCompatActivity() {
                             }
                             startActivity(intent)
                         } else {
-                            val loginAlertShow =
-                                ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 1f).setDuration(500)
-                            val loginAlertHide =
-                                ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 0f).setDuration(500)
-                            loginAlertShow.start()
+                            alertInfo(true)
                             if(response.code() == 404) {
                                 binding.loginInfoAlert.setBackgroundResource(R.drawable.alert_warning)
                                 binding.alertInfo.text = getString(R.string.wrong_username_or_password)
@@ -128,7 +136,7 @@ class LoginActivity : AppCompatActivity() {
                             binding.alertInfo.setTextColor(Color.WHITE)
                             val handler = Handler(Looper.getMainLooper())
                             handler.postDelayed({
-                                loginAlertHide.start()
+                                alertInfo(false)
                             }, 4000)
                         }
                     }
