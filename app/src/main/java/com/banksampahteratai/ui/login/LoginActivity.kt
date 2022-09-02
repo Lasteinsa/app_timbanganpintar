@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
             binding.loadingLogin.root.visibility = View.VISIBLE
             binding.loadingLogin.root.bringToFront()
         } else {
-            binding.loadingLogin.root.visibility = View.VISIBLE
+            binding.loadingLogin.root.visibility = View.INVISIBLE
         }
     }
 

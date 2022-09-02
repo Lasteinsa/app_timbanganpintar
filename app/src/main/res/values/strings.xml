@@ -16,4 +16,6 @@
     <string name="nama_nasabah">nama nasabah</string>
     <string name="cek_nasabah">Cek Nasabah</string>
     <string name="nasabah_not_found">Nasabah tidak ditemukan</string>
+    <string name="cancel_btn">Batal</string>
+    <string name="save_btn">Simpan</string>
 </resources>

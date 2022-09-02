@@ -45,7 +45,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TableLayout
@@ -72,6 +72,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:paddingLeft="12dp"
                     android:text="test"
                     android:textSize="18sp" />
@@ -93,6 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:paddingLeft="12dp"
                     android:text="total"
                     android:textSize="18sp" />
@@ -106,7 +108,7 @@
             android:layout_height="0dp"
             android:layout_margin="12dp"
             android:background="@drawable/btn_login_rounded"
-            android:text="Button"
+            android:text="@string/cancel_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +120,7 @@
             android:layout_height="0dp"
             android:layout_margin="12dp"
             android:background="@drawable/btn_login_rounded"
-            android:text="Button"
+            android:text="@string/save_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -128,8 +130,8 @@
             android:id="@+id/guideline3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent="0.5"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

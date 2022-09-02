@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
 
         preference      = DataPreference(this)
         mainViewModel   = MainViewModel(preference)
+        supportActionBar?.hide()
+        isLoading(true)
         utility = Utility()
         utility.checkAuth(preference, this@MainActivity)
-
-        supportActionBar?.hide()
-
+        isLoading(false)
         setupAction()
     }
 
