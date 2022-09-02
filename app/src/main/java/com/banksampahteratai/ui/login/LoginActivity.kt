@@ -62,10 +62,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun isLoading(load: Boolean) {
         if(load) {
-            binding.loadingInfo.visibility = View.VISIBLE
-            binding.loadingInfo.bringToFront()
+            binding.loadingLogin.root.visibility = View.VISIBLE
+            binding.loadingLogin.root.bringToFront()
         } else {
-            binding.loadingInfo.visibility = View.INVISIBLE
+            binding.loadingLogin.root.visibility = View.VISIBLE
         }
     }
 
