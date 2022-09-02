@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import com.banksampahteratai.R
 import com.banksampahteratai.data.api.ResultUser
 import com.banksampahteratai.databinding.ActivityScaleBinding
@@ -23,6 +24,13 @@ class ScaleActivity : AppCompatActivity() {
             binding.idNasabah.text = it.id
             binding.namaNasabah.text = it.namaLengkap
         }
+
+        val listSampah = ArrayList<String>()
+        for(i in 1..20) {
+            listSampah.add("Sampah ${i}")
+        }
+
+        binding.lvSampah.adapter = ArrayAdapter(this,android.R.layout.simple_list_item_1, listSampah)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
