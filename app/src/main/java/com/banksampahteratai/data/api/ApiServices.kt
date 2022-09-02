@@ -1,12 +1,10 @@
 package com.banksampahteratai.data.api
 
-import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.POST
 import okhttp3.RequestBody
 import retrofit2.http.Multipart
-import com.banksampahteratai.data.model.UserSignIn
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,6 +23,12 @@ interface ApiServices {
         @Header("token")
         token: String
     ): Call<ResponseSessionAuth>
+
+    @GET("admin/getnasabah")
+    fun getNasabah(
+        @Header("token") token: String,
+        @Query ("key") username: String?
+    ): Call<ResponseSearchUsers>
 }
 
 class ApiConfig {
@@ -36,7 +40,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://banksampah.budiluhur.ac.id/main/")
+                .baseUrl("https://banksampah.budiluhur.ac.id/bst_web/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

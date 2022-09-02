@@ -12,4 +12,7 @@
     <string name="session_ended_please_login">Sesi admin telah berakhir, silahkan login kembali</string>
     <string name="unknown_error">Unknown Error</string>
     <string name="test">test</string>
+    <string name="id_nasabah">id nasabah</string>
+    <string name="nama_nasabah">nama nasabah</string>
+    <string name="cek_nasabah">Cek Nasabah</string>
 </resources>

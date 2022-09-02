@@ -4,15 +4,21 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/alert_danger.xml" value="0.2075" />
+        <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/alert_warning.xml" value="0.2075" />
+        <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/btn_login_rounded.xml" value="0.2075" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.2075" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2075" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/rounded.xml" value="0.2075" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/rounded_black.xml" value="0.2075" />
+        <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/rounded_search_bar.xml" value="0.2075" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/drawable/rounded_white.xml" value="0.2075" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/activity_login.xml" value="0.4" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/activity_main.xml" value="0.24375" />
+        <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/activity_result_users.xml" value="0.21965579710144928" />
+        <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/activity_scale.xml" value="0.4" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/activity_splash.xml" value="0.2296875" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/activity_splash_screen.xml" value="0.24375" />
+        <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/layout/recycleview_result_users_search.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/mikue/AndroidStudioProjects/TimbanganPintar/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.115" />
       </map>
     </option>

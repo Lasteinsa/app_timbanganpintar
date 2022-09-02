@@ -16,6 +16,9 @@
         android:theme="@style/Theme.TimbanganPintar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.main.ScaleActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" />
         <activity
