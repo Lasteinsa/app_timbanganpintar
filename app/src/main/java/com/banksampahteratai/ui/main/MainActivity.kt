@@ -1,8 +1,14 @@
 package com.banksampahteratai.ui.main
 
+import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.*
@@ -32,6 +38,19 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         setupAction()
+    }
+
+    private fun alertInfo(isShow: Boolean) {
+        val loginAlertShow =
+            ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 1f).setDuration(500)
+        val loginAlertHide =
+            ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 0f).setDuration(500)
+
+        if(isShow) {
+            loginAlertShow.start()
+        } else {
+            loginAlertHide.start()
+        }
     }
 
     private fun setupAction() {
@@ -69,6 +88,20 @@ class MainActivity : AppCompatActivity() {
                         intent.putExtra("user", data)
                         startActivity(intent)
                     }
+                } else {
+                    alertInfo(true)
+                    if(response.code() == 404) {
+                        binding.loginInfoAlert.setBackgroundResource(R.drawable.alert_warning)
+                        binding.alertInfo.text = getString(R.string.nasabah_not_found)
+                    } else {
+                        binding.loginInfoAlert.setBackgroundResource(R.drawable.alert_danger)
+                        binding.alertInfo.text = getString(R.string.server_fault)
+                    }
+                    binding.alertInfo.setTextColor(Color.WHITE)
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed({
+                        alertInfo(false)
+                    }, 4000)
                 }
             }
 
