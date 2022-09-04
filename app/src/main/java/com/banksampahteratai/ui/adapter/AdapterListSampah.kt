@@ -25,14 +25,14 @@ class AdapterListSampah(val sampah: ArrayList<SampahModel>): RecyclerView.Adapte
 
     override fun getItemCount() = sampah.size
 
-    class ViewHolder(val binding: AdapterListSampahBinding): RecyclerView.ViewHolder(binding.root) {
-        val textJenisSampah     = binding.jenisSampah
-        val textKalkulasiSampah = binding.kalkulasiSampah
-    }
+    class ViewHolder(var binding: AdapterListSampahBinding): RecyclerView.ViewHolder(binding.root)
 
     public fun setData(data: List<SampahModel>) {
         sampah.clear()
-        sampah.addAll(data)
+
+        data.forEach {
+            sampah.add(SampahModel(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.hasilSampah))
+        }
         notifyDataSetChanged()
     }
 }

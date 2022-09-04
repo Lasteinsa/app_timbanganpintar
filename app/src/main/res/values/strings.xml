@@ -22,4 +22,9 @@
     <string name="garbage_calculation">Jumlah Sampah + Harga Sampah = Hasil</string>
     <string name="sum_sampah">Total Sampah</string>
     <string name="sum_harga">Total Harga</string>
+    <string name="add_it">Tambahkan</string>
+    <string name="confirm_yes">Oke</string>
+    <string name="confirm_no">Tidak</string>
+    <string name="title_sure_back">Yakin untuk kembali?</string>
+    <string name="data_will_be_lost">Data yang belum disimpan akan hilang</string>
 </resources>
