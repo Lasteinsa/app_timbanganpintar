@@ -35,4 +35,9 @@ class AdapterListSampah(val sampah: ArrayList<SampahModel>): RecyclerView.Adapte
         }
         notifyDataSetChanged()
     }
+
+    public fun clearData() {
+        sampah.clear()
+        notifyDataSetChanged()
+    }
 }

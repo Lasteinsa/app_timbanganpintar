@@ -35,6 +35,7 @@ class ScaleActivity : AppCompatActivity() {
         setupUser()
         setupList()
         setupRecycleSampah()
+        setupAction()
     }
 
     private fun setupUser() {
@@ -67,6 +68,25 @@ class ScaleActivity : AppCompatActivity() {
 
         binding.sumHarga.text   = "Rp. ${harga}"
         binding.sumSampah.text  = "${total} Kg."
+    }
+
+    private fun setupAction() {
+        binding.btnCancel.setOnClickListener {
+            AlertDialog.Builder(this).apply {
+                setTitle(getString(R.string.sure_to_delete))
+                setMessage(getString(R.string.data_will_be_lost))
+                setCancelable(false)
+                setPositiveButton(getString(R.string.confirm_yes), DialogInterface.OnClickListener { _, _ ->
+                    sampah.clear()
+                    adapterListSampah.clearData()
+                })
+                setNegativeButton(getString(R.string.confirm_no), DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                })
+                create()
+                show()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -105,7 +105,7 @@
         </TableLayout>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="12dp"
@@ -117,7 +117,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_submit"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="12dp"
