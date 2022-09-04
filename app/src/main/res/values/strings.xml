@@ -18,4 +18,8 @@
     <string name="nasabah_not_found">Nasabah tidak ditemukan</string>
     <string name="cancel_btn">Batal</string>
     <string name="save_btn">Simpan</string>
+    <string name="kind_of_trash">Jenis Sampah</string>
+    <string name="garbage_calculation">Jumlah Sampah + Harga Sampah = Hasil</string>
+    <string name="sum_sampah">Total Sampah</string>
+    <string name="sum_harga">Total Harga</string>
 </resources>

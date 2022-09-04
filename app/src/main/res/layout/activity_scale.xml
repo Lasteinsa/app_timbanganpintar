@@ -33,14 +33,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nama_nasabah" />
 
-    <ListView
-        android:id="@+id/lv_sampah"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_sampah"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/id_nasabah" >
-
-    </ListView>
+        app:layout_constraintTop_toBottomOf="@+id/id_nasabah" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -71,11 +70,12 @@
                     app:srcCompat="@drawable/ic_trash_alt" />
 
                 <TextView
+                    android:id="@+id/sum_sampah"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="12dp"
-                    android:text="test"
+                    android:text="@string/sum_sampah"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -93,11 +93,12 @@
                     app:srcCompat="@drawable/ic_money_alt" />
 
                 <TextView
+                    android:id="@+id/sum_harga"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="12dp"
-                    android:text="total"
+                    android:text="@string/sum_harga"
                     android:textSize="18sp" />
             </TableRow>
 
