@@ -1,11 +1,8 @@
 package com.banksampahteratai.ui.adapter
 
-import android.text.Layout
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.banksampahteratai.R
 import com.banksampahteratai.data.model.SampahModel
 import com.banksampahteratai.databinding.AdapterListSampahBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah.ViewHolder

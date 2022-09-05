@@ -3,22 +3,18 @@ package com.banksampahteratai.ui.main
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
 import com.banksampahteratai.data.api.ResultUser
 import com.banksampahteratai.data.model.SampahModel
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
-import com.banksampahteratai.ui.login.LoginActivity
-import kotlinx.coroutines.NonCancellable.cancel
 
 class ScaleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScaleBinding
@@ -102,7 +98,6 @@ class ScaleActivity : AppCompatActivity() {
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
             val sampahData = result.data?.extras?.getParcelableArrayList<SampahModel>("sampah")
             setupRecycleSampah(sampahData)
         }

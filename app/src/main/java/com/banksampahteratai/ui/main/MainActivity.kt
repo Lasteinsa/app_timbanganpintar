@@ -11,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
-import com.banksampahteratai.data.api.*
+import com.banksampahteratai.data.api.ApiConfig
+import com.banksampahteratai.data.api.ResponseSearchUsers
+import com.banksampahteratai.data.api.ResultUser
 import com.banksampahteratai.databinding.ActivityMainBinding
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

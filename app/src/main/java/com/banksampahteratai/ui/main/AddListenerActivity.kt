@@ -2,9 +2,8 @@ package com.banksampahteratai.ui.main
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.banksampahteratai.data.api.ResultUser
+import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.data.model.SampahModel
 import com.banksampahteratai.databinding.ActivityAddListenerBinding
 
