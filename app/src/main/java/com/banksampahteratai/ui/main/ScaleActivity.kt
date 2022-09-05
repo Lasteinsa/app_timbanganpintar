@@ -60,6 +60,8 @@ class ScaleActivity : AppCompatActivity() {
             sampah.add(SampahModel(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.hasilSampah))
         }
 
+        total = 0
+        harga = 0
         sampah.forEach {
             total += it.jumlahSampah
             harga += it.hasilSampah
@@ -78,8 +80,7 @@ class ScaleActivity : AppCompatActivity() {
                 setMessage(getString(R.string.data_will_be_lost))
                 setCancelable(false)
                 setPositiveButton(getString(R.string.confirm_yes), DialogInterface.OnClickListener { _, _ ->
-                    sampah.clear()
-                    adapterListSampah.clearData()
+                    resetSampah()
                 })
                 setNegativeButton(getString(R.string.confirm_no), DialogInterface.OnClickListener { dialog, _ ->
                     dialog.dismiss()
@@ -88,6 +89,15 @@ class ScaleActivity : AppCompatActivity() {
                 show()
             }
         }
+    }
+
+    private fun resetSampah() {
+        sampah.clear()
+        total = 0
+        harga = 0
+        binding.sumHarga.text   = "Rp. ${harga}"
+        binding.sumSampah.text  = "${total} Kg."
+        adapterListSampah.clearData()
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
