@@ -29,5 +29,8 @@ class AddListenerActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK,intent)
             finish()
         }
+        binding.cancelIt.setOnClickListener {
+            finish()
+        }
     }
 }
