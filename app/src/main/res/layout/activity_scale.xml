@@ -83,13 +83,14 @@
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="160dp"
+        android:background="@drawable/scale_bottom_background"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -113,6 +114,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="12dp"
+                    android:textColor="@color/white"
                     android:text="@string/sum_sampah"
                     android:textSize="18sp" />
             </TableRow>
@@ -136,6 +138,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="12dp"
+                    android:textColor="@color/white"
                     android:text="@string/sum_harga"
                     android:textSize="18sp" />
             </TableRow>
