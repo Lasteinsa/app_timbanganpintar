@@ -1,5 +1,6 @@
 package com.banksampahteratai.ui.main
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
@@ -34,7 +37,6 @@ class ScaleActivity : AppCompatActivity() {
         supportActionBar?.title = "Nasabah"
         setupUser()
         setupList()
-        setupRecycleSampah()
         setupAction()
     }
 
@@ -53,8 +55,7 @@ class ScaleActivity : AppCompatActivity() {
         adapterList.adapter = adapterListSampah
     }
 
-    private fun setupRecycleSampah() {
-        val sampahData = intent.extras?.getParcelableArrayList<SampahModel>("sampah")
+    private fun setupRecycleSampah(sampahData:  ArrayList<SampahModel>?) {
         sampahData?.forEach {
             sampah.add(SampahModel(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.hasilSampah))
         }
@@ -89,14 +90,23 @@ class ScaleActivity : AppCompatActivity() {
         }
     }
 
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val sampahData = result.data?.extras?.getParcelableArrayList<SampahModel>("sampah")
+            setupRecycleSampah(sampahData)
+        }
+    }
+
+    private fun openAddListenerActivity() {
+        val intent = Intent(this, AddListenerActivity::class.java)
+        resultLauncher.launch(intent)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_listener -> {
-                val intent = Intent(this, AddListenerActivity::class.java)
-                intent.putExtra("nextsampah", sampah)
-                intent.putExtra("user", user)
-                startActivity(intent)
-                finish()
+                openAddListenerActivity()
                 return true
             }
             else ->return true
