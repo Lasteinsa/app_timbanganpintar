@@ -38,10 +38,13 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupUser() {
         val userData = intent.extras?.getParcelableArrayList<ResultUser>("user")
-        userData?.forEach {
-            user.add(ResultUser(it.id, it.namaLengkap))
-            binding.idNasabah.text      = it.id
-            binding.namaNasabah.text    = it.namaLengkap
+        userData?.forEach { dataUser ->
+            user.add(ResultUser(dataUser.id, dataUser.namaLengkap))
+            binding.idNasabah.text      = dataUser.id
+            binding.namaNasabah.text    = dataUser.namaLengkap.toString()
+                .split(' ').joinToString(" ") { char ->
+                    char.replaceFirstChar { it.uppercase() }
+                }
         }
     }
 
