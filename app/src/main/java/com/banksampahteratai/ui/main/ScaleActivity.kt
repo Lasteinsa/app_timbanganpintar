@@ -49,24 +49,23 @@ class ScaleActivity : AppCompatActivity() {
         adapterList = binding.listSampah
         adapterListSampah   = AdapterListSampah(arrayListOf())
         adapterList.adapter = adapterListSampah
+
+        adapterListSampah.setOnCallbackInterface(object: AdapterListSampah.CallbackInterface {
+            override fun passSampah(dataSampah: ArrayList<SampahModel>) {
+                sampah.clear()
+                sampah.addAll(dataSampah)
+                reCalculatePlease()
+            }
+        })
     }
 
     private fun setupRecycleSampah(sampahData:  ArrayList<SampahModel>?) {
         sampahData?.forEach {
             sampah.add(SampahModel(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.hasilSampah))
         }
-
-        total = 0
-        harga = 0
-        sampah.forEach {
-            total += it.jumlahSampah
-            harga += it.hasilSampah
-        }
-
         adapterListSampah.setData(sampah)
 
-        binding.sumHarga.text   = "Rp. ${harga}"
-        binding.sumSampah.text  = "${total} Kg."
+        reCalculatePlease()
     }
 
     private fun setupAction() {
@@ -94,6 +93,17 @@ class ScaleActivity : AppCompatActivity() {
         binding.sumHarga.text   = "Rp. ${harga}"
         binding.sumSampah.text  = "${total} Kg."
         adapterListSampah.clearData()
+    }
+
+    private fun reCalculatePlease() {
+        total = 0
+        harga = 0
+        sampah.forEach {
+            total += it.jumlahSampah
+            harga += it.hasilSampah
+        }
+        binding.sumHarga.text   = "Rp. ${harga}"
+        binding.sumSampah.text  = "${total} Kg."
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
