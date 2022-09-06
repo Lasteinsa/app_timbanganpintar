@@ -15,6 +15,7 @@ import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseSearchUsers
 import com.banksampahteratai.data.api.ResultUser
 import com.banksampahteratai.databinding.ActivityMainBinding
+import com.banksampahteratai.ui.login.LoginActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,8 +35,16 @@ class MainActivity : AppCompatActivity() {
         mainViewModel   = MainViewModel(preference)
         supportActionBar?.hide()
 
-        utility = Utility()
-        utility.checkAuth(preference, this@MainActivity)
+        if(preference.isLogin) {
+            utility = Utility()
+            utility.checkAuth(preference, this@MainActivity)
+        } else {
+            val intent = Intent(this@MainActivity, LoginActivity::class.java).apply {
+                flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(intent)
+        }
 
         setupAction()
     }
