@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
@@ -128,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ResponseSearchUsers>, t: Throwable) {
                 isLoading(false)
-                TODO("Not yet implemented")
+                Toast.makeText(this@MainActivity, "Tidak ada Internet", Toast.LENGTH_SHORT).show()
             }
 
         })
