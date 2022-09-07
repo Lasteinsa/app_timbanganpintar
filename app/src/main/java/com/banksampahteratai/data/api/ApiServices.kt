@@ -1,5 +1,6 @@
 package com.banksampahteratai.data.api
 
+import com.banksampahteratai.data.model.TransaksiModel
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.POST
@@ -29,6 +30,12 @@ interface ApiServices {
         @Header("token") token: String,
         @Query ("key") username: String?
     ): Call<ResponseSearchUsers>
+
+    @POST("/transaksi/setorsampah")
+    fun setorSampah(
+        @Header("token") token: String,
+        @Body data: TransaksiModel
+    ): Call<ResponseTransaksi>
 }
 
 class ApiConfig {

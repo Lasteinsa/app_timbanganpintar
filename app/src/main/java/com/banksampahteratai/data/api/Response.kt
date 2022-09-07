@@ -24,6 +24,17 @@ data class ResultUser(
 	val namaLengkap: String?
 ): Parcelable
 
+data class ResponseTransaksi(
+	@field:SerializedName("status")
+	val status: Int? = null,
+
+	@field:SerializedName("error")
+	val error: Boolean? = null,
+
+	@field:SerializedName("message")
+	val message: String? = null
+)
+
 data class ResponseSearchUsers(
 
 	@field:SerializedName("data")

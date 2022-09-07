@@ -22,6 +22,9 @@ class ScaleActivity : AppCompatActivity() {
     private lateinit var adapterList: RecyclerView
     private val sampah: ArrayList<SampahModel> = ArrayList()
     private val user: ArrayList<ResultUser> = ArrayList()
+    private var nameNasabah: String = ""
+    private var idNasabah: String? = ""
+    private var date: String = ""
     private var harga: Int = 0
     private var total: Int = 0
 
@@ -40,12 +43,15 @@ class ScaleActivity : AppCompatActivity() {
         val userData = intent.extras?.getParcelableArrayList<ResultUser>("user")
         userData?.forEach { dataUser ->
             user.add(ResultUser(dataUser.id, dataUser.namaLengkap))
-            binding.idNasabah.text      = dataUser.id
-            binding.namaNasabah.text    = dataUser.namaLengkap.toString()
+            idNasabah   = dataUser.id
+            nameNasabah = dataUser.namaLengkap.toString()
                 .split(' ').joinToString(" ") { char ->
                     char.replaceFirstChar { it.uppercase() }
                 }
         }
+
+        binding.idNasabah.text      = idNasabah
+        binding.namaNasabah.text    = nameNasabah
     }
 
     private fun setupList() {
@@ -87,6 +93,25 @@ class ScaleActivity : AppCompatActivity() {
                 show()
             }
         }
+        binding.btnSubmit.setOnClickListener {
+            AlertDialog.Builder(this).apply {
+                setTitle("Submit?")
+                setMessage("test")
+                setCancelable(false)
+                setPositiveButton(getString(R.string.confirm_yes), DialogInterface.OnClickListener { _, _ ->
+                    submitSampah()
+                })
+                setNegativeButton(getString(R.string.confirm_no), DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                })
+                create()
+                show()
+            }
+        }
+    }
+
+    private fun submitSampah() {
+
     }
 
     private fun resetSampah() {

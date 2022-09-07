@@ -10,3 +10,13 @@ data class SampahModel(
     val hargaSampah: Int,
     val hasilSampah: Int
 ) : Parcelable
+
+data class TransaksiModel(
+    val id_nasabah: Int,
+    val date: String,
+    val transaksi: Map<String, TransaksiData>
+)
+
+data class TransaksiData(
+    val slot : Map<String, String>
+)
