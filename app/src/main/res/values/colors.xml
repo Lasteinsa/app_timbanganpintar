@@ -17,6 +17,7 @@
     <color name="teratai_dark">#2C3639</color>
     <color name="teratai_branch_main">#6ECB63</color>
     <color name="teratai_branch_secondary">#B1E693</color>
+    <color name="teratai_branch_tertiary">#8FFBAF</color>
 
     <color name="warning">#ffc107</color>
 
