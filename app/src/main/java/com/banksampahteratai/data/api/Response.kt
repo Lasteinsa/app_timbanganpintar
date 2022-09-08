@@ -18,11 +18,27 @@ data class ResponseSessionAuth(
 	val message: String? = null
 )
 
-@Parcelize
-data class ResultUser(
-	val id: String?,
-	val namaLengkap: String?
-): Parcelable
+data class ResponseKategoriSampah(
+	@field:SerializedName("status")
+	val status: Int? = null,
+
+	@field:SerializedName("error")
+	val error: Boolean? = null,
+
+	@field:SerializedName("data")
+	val data: List<DataKategoriSampah?>? = null
+)
+
+data class DataKategoriSampah(
+	@field:SerializedName("id")
+	val id: String? = null,
+
+	@field:SerializedName("name")
+	val name: String? = null,
+
+	@field:SerializedName("created_at")
+	val createdAt: String? = null
+)
 
 data class ResponseTransaksi(
 	@field:SerializedName("status")

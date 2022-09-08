@@ -31,11 +31,16 @@ interface ApiServices {
         @Query ("key") username: String?
     ): Call<ResponseSearchUsers>
 
-    @POST("/transaksi/setorsampah")
+    @POST("transaksi/setorsampah")
     fun setorSampah(
         @Header("token") token: String,
         @Body data: TransaksiModel
     ): Call<ResponseTransaksi>
+
+    @GET("sampah/getkategori")
+    fun getKategoriSampah(
+
+    ): Call<ResponseKategoriSampah>
 }
 
 class ApiConfig {

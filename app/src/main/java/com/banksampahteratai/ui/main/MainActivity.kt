@@ -2,7 +2,6 @@ package com.banksampahteratai.ui.main
 
 import android.animation.ObjectAnimator
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -15,11 +14,10 @@ import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseSearchUsers
-import com.banksampahteratai.data.api.ResultUser
+import com.banksampahteratai.data.model.User
 import com.banksampahteratai.databinding.ActivityMainBinding
 import com.banksampahteratai.ui.login.LoginActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -106,9 +104,9 @@ class MainActivity : AppCompatActivity() {
                     isLoading(false)
                     val responseBody = response.body()
                     if(responseBody != null) {
-                        val data = ArrayList<ResultUser>()
+                        val data = ArrayList<User>()
                         responseBody.data?.forEach {
-                            data.add(ResultUser(it?.id, it?.namaLengkap))
+                            data.add(User(it?.id, it?.namaLengkap))
                         }
                         val intent = Intent(this@MainActivity, ScaleActivity::class.java)
                         intent.putExtra("user", data)
