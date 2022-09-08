@@ -116,3 +116,24 @@ data class ItemSampah(
 	val hargaPusat: String? = null
 )
 
+data class ResponseKategoriSampah(
+	@field:SerializedName("data")
+	val data: List<KategoriItem?>? = null,
+
+	@field:SerializedName("error")
+	val error: Boolean? = null,
+
+	@field:SerializedName("status")
+	val status: Int? = null
+)
+
+data class KategoriItem(
+	@field:SerializedName("id")
+	val id: String? = null,
+
+	@field:SerializedName("name")
+	val name: String? = null,
+
+	@field:SerializedName("created_at")
+	val created_at: String? = null,
+)

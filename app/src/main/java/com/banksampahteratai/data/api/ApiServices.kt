@@ -41,6 +41,11 @@ interface ApiServices {
     fun getListHargaSampah(
         @Header("token") token: String
     ): Call<ResponseDataSampah>
+
+    @GET("sampah/getkategori")
+    fun getKategoriSampah(
+
+    ): Call<ResponseKategoriSampah>
 }
 
 class ApiConfig {

@@ -20,10 +20,8 @@ import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseDataSampah
-import com.banksampahteratai.data.model.SampahModel
-import com.banksampahteratai.data.model.SampahShow
-import com.banksampahteratai.data.model.TransaksiData
-import com.banksampahteratai.data.model.User
+import com.banksampahteratai.data.api.ResponseKategoriSampah
+import com.banksampahteratai.data.model.*
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
 import retrofit2.Call
@@ -36,6 +34,7 @@ class ScaleActivity : AppCompatActivity() {
     private lateinit var adapterList: RecyclerView
     private lateinit var preference: DataPreference
     private val listHargaSampah: ArrayList<SampahModel> = ArrayList()
+    private val listKategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private val sampah: ArrayList<SampahShow> = ArrayList()
     private val dataTransaksi: ArrayList<TransaksiData> = ArrayList()
     private val user: ArrayList<User> = ArrayList()
@@ -72,8 +71,8 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupListHargaSampah() {
         isLoading(true)
-        val retrofitInstance = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
-        retrofitInstance.enqueue(object: Callback<ResponseDataSampah> {
+        val retrofitInstanceGetListHargaSampah = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
+        retrofitInstanceGetListHargaSampah.enqueue(object: Callback<ResponseDataSampah> {
             override fun onResponse(
                 call: Call<ResponseDataSampah>,
                 response: Response<ResponseDataSampah>
@@ -93,6 +92,31 @@ class ScaleActivity : AppCompatActivity() {
                 isLoading(false)
                 Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
+        })
+
+        isLoading(true)
+        val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
+        retrofitInstanceGetKategoriSampah.enqueue(object : Callback<ResponseKategoriSampah> {
+            override fun onResponse(
+                call: Call<ResponseKategoriSampah>,
+                response: Response<ResponseKategoriSampah>
+            ) {
+                isLoading(false)
+                if(response.isSuccessful) {
+                    val responseBody = response.body()?.data
+                    responseBody?.forEach {
+                        listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
+                    }
+                } else {
+                    Toast.makeText(this@ScaleActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseKategoriSampah>, t: Throwable) {
+                isLoading(false)
+                Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+
         })
     }
 
@@ -214,7 +238,8 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun openAddListenerActivity() {
         val intent = Intent(this, AddListenerActivity::class.java)
-        intent.putParcelableArrayListExtra("kategoriSampah", listHargaSampah)
+        intent.putParcelableArrayListExtra("listHargaSampah", listHargaSampah)
+        intent.putParcelableArrayListExtra("kategoriSampah", listKategoriSampah)
         resultLauncher.launch(intent)
     }
 

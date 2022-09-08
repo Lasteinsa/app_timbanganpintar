@@ -40,3 +40,10 @@ data class SampahShow(
     val hargaSampah: Int,
     val totalHarga: Double
 ): Parcelable
+
+@Parcelize
+data class KategoriSampahModel(
+    var id: String? = null,
+    var name: String? = null,
+    var created_at: String? = null
+): Parcelable
