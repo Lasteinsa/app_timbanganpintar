@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,14 +16,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
+import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.api.ApiConfig
-import com.banksampahteratai.data.api.ResponseKategoriSampah
-import com.banksampahteratai.data.model.KategoriSampah
+import com.banksampahteratai.data.api.ResponseDataSampah
 import com.banksampahteratai.data.model.SampahModel
+import com.banksampahteratai.data.model.SampahShow
+import com.banksampahteratai.data.model.TransaksiData
 import com.banksampahteratai.data.model.User
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
-import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,27 +33,31 @@ class ScaleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScaleBinding
     private lateinit var adapterListSampah: AdapterListSampah
     private lateinit var adapterList: RecyclerView
-    private val kategoriSampah: ArrayList<KategoriSampah> = ArrayList()
-    private val sampah: ArrayList<SampahModel> = ArrayList()
+    private lateinit var preference: DataPreference
+    private val listHargaSampah: ArrayList<SampahModel> = ArrayList()
+    private val sampah: ArrayList<SampahShow> = ArrayList()
+    private val dataTransaksi: ArrayList<TransaksiData> = ArrayList()
     private val user: ArrayList<User> = ArrayList()
     private var nameNasabah: String = ""
     private var idNasabah: String? = ""
     private var date: String = ""
-    private var idSampah: String = ""
-    private var harga: Int = 0
-    private var total: Int = 0
+    private var idSampah: Int = 0
+    private var harga: Double = 0.0
+    private var total: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityScaleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        preference = DataPreference(this)
+
         supportActionBar?.title = "Nasabah"
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this,R.color.teratai_main)))
         setupUser()
         setupList()
         setupAction()
-        setupKategoriSampah()
+        setupListHargaSampah()
     }
 
     private fun isLoading(load: Boolean) {
@@ -63,26 +69,26 @@ class ScaleActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupKategoriSampah() {
+    private fun setupListHargaSampah() {
         isLoading(true)
-        val retrofitInstance = ApiConfig.getApiService().getKategoriSampah()
-        retrofitInstance.enqueue(object: Callback<ResponseKategoriSampah> {
+        val retrofitInstance = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
+        retrofitInstance.enqueue(object: Callback<ResponseDataSampah> {
             override fun onResponse(
-                call: Call<ResponseKategoriSampah>,
-                response: Response<ResponseKategoriSampah>
+                call: Call<ResponseDataSampah>,
+                response: Response<ResponseDataSampah>
             ) {
                 isLoading(false)
                 if(response.isSuccessful) {
                     val responseBody = response.body()?.data
                     responseBody?.forEach {
-                        kategoriSampah.add(KategoriSampah(it?.id, it?.name, it?.createdAt))
+                        listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                     }
                 } else {
                     Toast.makeText(this@ScaleActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<ResponseKategoriSampah>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseDataSampah>, t: Throwable) {
                 isLoading(false)
                 Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
@@ -106,23 +112,28 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupList() {
         adapterList = binding.listSampah
-        adapterListSampah   = AdapterListSampah(arrayListOf())
+        adapterListSampah   = AdapterListSampah(arrayListOf(), arrayListOf())
         adapterList.adapter = adapterListSampah
 
         adapterListSampah.setOnCallbackInterface(object: AdapterListSampah.CallbackInterface {
-            override fun passSampah(dataSampah: ArrayList<SampahModel>) {
+            override fun passSampah(dataSampah: ArrayList<SampahShow>, listTransaksiSampah: ArrayList<TransaksiData>) {
                 sampah.clear()
                 sampah.addAll(dataSampah)
+                dataTransaksi.clear()
+                dataTransaksi.addAll(listTransaksiSampah)
                 reCalculatePlease()
             }
         })
     }
 
-    private fun setupRecycleSampah(sampahData:  ArrayList<SampahModel>?) {
+    private fun setupRecycleSampah(sampahData:  ArrayList<SampahShow>?, transaksiData: ArrayList<TransaksiData>?) {
         sampahData?.forEach {
-            sampah.add(SampahModel(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.hasilSampah))
+            sampah.add(SampahShow(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.totalHarga))
         }
-        adapterListSampah.setData(sampah)
+        transaksiData?.forEach {
+            dataTransaksi.add(TransaksiData(it.idSampah, it.jumlah))
+        }
+        adapterListSampah.setData(sampah, dataTransaksi)
 
         reCalculatePlease()
     }
@@ -166,19 +177,19 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun resetSampah() {
         sampah.clear()
-        total = 0
-        harga = 0
+        total = 0.0
+        harga = 0.0
         binding.sumHarga.text   = "Rp. ${harga}"
         binding.sumSampah.text  = "${total} Kg."
         adapterListSampah.clearData()
     }
 
     private fun reCalculatePlease() {
-        total = 0
-        harga = 0
+        total = 0.0
+        harga = 0.0
         sampah.forEach {
             total += it.jumlahSampah
-            harga += it.hasilSampah
+            harga += (it.jumlahSampah * it.hargaSampah)
         }
         binding.sumHarga.text   = "Rp. ${harga}"
         binding.sumSampah.text  = "${total} Kg."
@@ -186,16 +197,15 @@ class ScaleActivity : AppCompatActivity() {
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val sampahData = result.data?.extras?.getParcelableArrayList<SampahModel>("sampah")
-            val returnId = result.data?.extras?.getInt("kategoriSampah")
-            idSampah = kategoriSampah[returnId!!].id.toString()
-            setupRecycleSampah(sampahData)
+            val sampahData = result.data?.extras?.getParcelableArrayList<TransaksiData>("sampah")
+            val sampahShow = result.data?.extras?.getParcelableArrayList<SampahShow>("sampahShow")
+            setupRecycleSampah(sampahShow, sampahData)
         }
     }
 
     private fun openAddListenerActivity() {
         val intent = Intent(this, AddListenerActivity::class.java)
-        intent.putParcelableArrayListExtra("kategoriSampah", kategoriSampah)
+        intent.putParcelableArrayListExtra("kategoriSampah", listHargaSampah)
         resultLauncher.launch(intent)
     }
 

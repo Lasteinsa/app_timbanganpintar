@@ -18,28 +18,6 @@ data class ResponseSessionAuth(
 	val message: String? = null
 )
 
-data class ResponseKategoriSampah(
-	@field:SerializedName("status")
-	val status: Int? = null,
-
-	@field:SerializedName("error")
-	val error: Boolean? = null,
-
-	@field:SerializedName("data")
-	val data: List<DataKategoriSampah?>? = null
-)
-
-data class DataKategoriSampah(
-	@field:SerializedName("id")
-	val id: String? = null,
-
-	@field:SerializedName("name")
-	val name: String? = null,
-
-	@field:SerializedName("created_at")
-	val createdAt: String? = null
-)
-
 data class ResponseTransaksi(
 	@field:SerializedName("status")
 	val status: Int? = null,
@@ -100,5 +78,41 @@ data class DataItem(
 
 	@field:SerializedName("alamat")
 	val alamat: String? = null
+)
+
+data class ResponseDataSampah(
+
+	@field:SerializedName("data")
+	val data: List<ItemSampah?>? = null,
+
+	@field:SerializedName("error")
+	val error: Boolean? = null,
+
+	@field:SerializedName("status")
+	val status: Int? = null
+)
+
+data class ItemSampah(
+
+	@field:SerializedName("id_kategori")
+	val idKategori: String? = null,
+
+	@field:SerializedName("harga")
+	val harga: String? = null,
+
+	@field:SerializedName("jumlah")
+	val jumlah: String? = null,
+
+	@field:SerializedName("jenis")
+	val jenis: String? = null,
+
+	@field:SerializedName("kategori")
+	val kategori: String? = null,
+
+	@field:SerializedName("id")
+	val id: String? = null,
+
+	@field:SerializedName("harga_pusat")
+	val hargaPusat: String? = null
 )
 

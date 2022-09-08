@@ -37,10 +37,10 @@ interface ApiServices {
         @Body data: TransaksiModel
     ): Call<ResponseTransaksi>
 
-    @GET("sampah/getkategori")
-    fun getKategoriSampah(
-
-    ): Call<ResponseKategoriSampah>
+    @GET("sampah/getsampah")
+    fun getListHargaSampah(
+        @Header("token") token: String
+    ): Call<ResponseDataSampah>
 }
 
 class ApiConfig {

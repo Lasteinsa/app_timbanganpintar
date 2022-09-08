@@ -6,10 +6,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SampahModel(
-    val jenisSampah: String,
-    val jumlahSampah: Int,
-    val hargaSampah: Int,
-    val hasilSampah: Int
+    val id: String?,
+    val idKategori: String?,
+    val kategori: String?,
+    val jenis: String?,
+    val harga: Int?,
+    val hargaPusat: Int?,
+    val jumlah: Double?
 ) : Parcelable
 
 @Parcelize
@@ -18,21 +21,22 @@ data class User(
     val namaLengkap: String?
 ): Parcelable
 
-@Parcelize
-data class KategoriSampah(
-    val id: String? = null,
-    val name: String? = null,
-    val createdAt: String? = null
-): Parcelable
-
 data class TransaksiModel(
     var idNasabah: String? = null,
     var date: String? = null,
     var transaksi: ArrayList<TransaksiData> = arrayListOf()
 )
 
+@Parcelize
 data class TransaksiData(
-    var slot: String? = null,
     var idSampah: String? = null,
     var jumlah: String? = null
-)
+): Parcelable
+
+@Parcelize
+data class SampahShow(
+    val jenisSampah: String,
+    val jumlahSampah: Double,
+    val hargaSampah: Int,
+    val totalHarga: Double
+): Parcelable
