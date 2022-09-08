@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -197,8 +198,16 @@ class ScaleActivity : AppCompatActivity() {
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val sampahData = result.data?.extras?.getParcelableArrayList<TransaksiData>("sampah")
-            val sampahShow = result.data?.extras?.getParcelableArrayList<SampahShow>("sampahShow")
+            val sampahData = if (Build.VERSION.SDK_INT >= 33) {
+                result.data?.extras?.getParcelableArrayList("sampah", TransaksiData::class.java)
+            } else {
+                result.data?.extras?.getParcelableArrayList("sampah")
+            }
+            val sampahShow = if (Build.VERSION.SDK_INT >= 33) {
+                result.data?.extras?.getParcelableArrayList<SampahShow>("sampahShow", SampahShow::class.java)
+            } else {
+                result.data?.extras?.getParcelableArrayList("sampahShow")
+            }
             setupRecycleSampah(sampahShow, sampahData)
         }
     }
