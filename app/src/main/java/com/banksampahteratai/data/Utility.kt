@@ -6,14 +6,23 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.util.Log
+import android.view.Gravity
+import android.view.View
 import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.marginStart
+import androidx.core.view.marginTop
 import com.banksampahteratai.R
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseSessionAuth
 import com.banksampahteratai.ui.login.LoginActivity
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -109,5 +118,20 @@ class Utility {
             create()
             show()
         }
+    }
+
+    fun showSnackbar(context: Context, view: View, text: String, isDanger: Boolean) {
+        val snackbar                = Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+        val customSnackView: View   = View.inflate(context,R.layout.danger_alert_info,null)
+        val snackbarLayout          = snackbar.view as Snackbar.SnackbarLayout
+        snackbar.setTextColor(context.getColor(R.color.white))
+        if(isDanger) {
+            snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_danger, null)
+        } else {
+            snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_warning, null)
+        }
+        snackbarLayout.setPadding(0, 0, 0, 0)
+        snackbarLayout.addView(customSnackView, 0)
+        snackbar.show()
     }
 }

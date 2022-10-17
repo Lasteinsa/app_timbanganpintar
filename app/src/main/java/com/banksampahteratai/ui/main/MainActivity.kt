@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.R
+import com.banksampahteratai.data.Const.Companion.USER
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
@@ -56,37 +57,15 @@ class MainActivity : AppCompatActivity() {
         setupAction()
     }
 
-    private fun alertInfo(isShow: Boolean) {
-        val loginAlertShow =
-            ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 1f).setDuration(500)
-        val loginAlertHide =
-            ObjectAnimator.ofFloat(binding.loginInfoAlert, "alpha", 0f).setDuration(500)
-
-        if(isShow) {
-            loginAlertShow.start()
-        } else {
-            loginAlertHide.start()
-        }
-    }
-
-//    private fun isLoading(load: Boolean) {
-//        if(load) {
-//            binding.loadingLogin.root.visibility = View.VISIBLE
-//            binding.loadingLogin.root.bringToFront()
-//        } else {
-//            binding.loadingLogin.root.visibility = View.INVISIBLE
-//        }
-//    }
-
     private fun setupAction() {
         binding.searchUser.setOnClickListener {
             binding.searchUser.onActionViewExpanded()
         }
         binding.searchUser.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-//                isLoading(true)
                 utility.showLoading(this@MainActivity,false)
                 searchUsers(p0)
+                binding.searchUser.clearFocus()
                 return false
             }
 
@@ -105,7 +84,6 @@ class MainActivity : AppCompatActivity() {
                 response: Response<ResponseSearchUsers>
             ) {
                 if(response.isSuccessful) {
-//                    isLoading(false)
                     utility.hideLoading()
                     val responseBody = response.body()
                     if(responseBody != null) {
@@ -114,32 +92,22 @@ class MainActivity : AppCompatActivity() {
                             data.add(User(it?.id, it?.namaLengkap))
                         }
                         val intent = Intent(this@MainActivity, ScaleActivity::class.java)
-                        intent.putExtra("user", data)
+                        intent.putExtra(USER, data)
                         startActivity(intent)
                     }
                 } else {
-//                    isLoading(false)
                     utility.hideLoading()
-                    alertInfo(true)
                     if(response.code() == 404) {
-                        binding.loginInfoAlert.setBackgroundResource(R.drawable.alert_warning)
-                        binding.alertInfo.text = getString(R.string.nasabah_not_found)
+                        utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.nasabah_not_found), false)
                     } else {
-                        binding.loginInfoAlert.setBackgroundResource(R.drawable.alert_danger)
-                        binding.alertInfo.text = getString(R.string.server_fault)
+                        utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.server_fault), true)
                     }
-                    binding.alertInfo.setTextColor(Color.WHITE)
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.postDelayed({
-                        alertInfo(false)
-                    }, 4000)
                 }
             }
 
             override fun onFailure(call: Call<ResponseSearchUsers>, t: Throwable) {
-//                isLoading(false)
                 utility.hideLoading()
-                Toast.makeText(this@MainActivity, "Tidak ada Internet", Toast.LENGTH_SHORT).show()
+                utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.no_internet), true)
             }
 
         })

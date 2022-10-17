@@ -40,4 +40,5 @@
     <string name="bigno">TIDAK</string>
     <string name="want_submit">Submit?</string>
     <string name="data_will_be_send">Data akan dikirim</string>
+    <string name="no_internet">Tidak Ada Internet</string>
 </resources>
