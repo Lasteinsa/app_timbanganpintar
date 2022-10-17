@@ -1,5 +1,6 @@
 package com.banksampahteratai.data.api
 
+import com.banksampahteratai.data.model.TransaksiData
 import com.banksampahteratai.data.model.TransaksiModel
 import retrofit2.Call
 import retrofit2.http.*
@@ -31,10 +32,11 @@ interface ApiServices {
         @Query ("key") username: String?
     ): Call<ResponseSearchUsers>
 
-    @POST("transaksi/setorsampah")
+//    @Multipart
+    @POST("transaksi/setorsampahapk")
     fun setorSampah(
         @Header("token") token: String,
-        @Body data: TransaksiModel
+            @Body data: TransaksiModel
     ): Call<ResponseTransaksi>
 
     @GET("sampah/getsampah")
@@ -57,7 +59,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://banksampah.budiluhur.ac.id/bst_web/")
+                .baseUrl("https://bstpinanggriya.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

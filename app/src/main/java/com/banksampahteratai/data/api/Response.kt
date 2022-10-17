@@ -25,8 +25,8 @@ data class ResponseTransaksi(
 	@field:SerializedName("error")
 	val error: Boolean? = null,
 
-	@field:SerializedName("message")
-	val message: String? = null
+	@field:SerializedName("messages")
+	val messages: String? = null
 )
 
 data class ResponseSearchUsers(

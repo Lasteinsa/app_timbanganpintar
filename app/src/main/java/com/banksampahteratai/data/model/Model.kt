@@ -22,14 +22,14 @@ data class User(
 ): Parcelable
 
 data class TransaksiModel(
-    var idNasabah: String? = null,
+    var id_nasabah: String? = null,
     var date: String? = null,
     var transaksi: ArrayList<TransaksiData> = arrayListOf()
 )
 
 @Parcelize
 data class TransaksiData(
-    var idSampah: String? = null,
+    var id_sampah: String? = null,
     var jumlah: String? = null
 ): Parcelable
 

@@ -45,7 +45,7 @@ class AdapterListSampah(val sampah: ArrayList<SampahShow>, val listTransaksiSamp
         }
 
         listTransaksi.forEach {
-            listTransaksiSampah.add(TransaksiData(it.idSampah,it.jumlah))
+            listTransaksiSampah.add(TransaksiData(it.id_sampah,it.jumlah))
         }
 
         notifyDataSetChanged()

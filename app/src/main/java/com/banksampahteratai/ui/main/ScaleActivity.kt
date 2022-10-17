@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,21 +17,24 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
-import com.banksampahteratai.data.api.ApiConfig
-import com.banksampahteratai.data.api.ResponseDataSampah
-import com.banksampahteratai.data.api.ResponseKategoriSampah
+import com.banksampahteratai.data.api.*
 import com.banksampahteratai.data.model.*
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ScaleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScaleBinding
     private lateinit var adapterListSampah: AdapterListSampah
     private lateinit var adapterList: RecyclerView
     private lateinit var preference: DataPreference
+    private lateinit var submitData: TransaksiModel
     private val listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private val listKategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private val sampah: ArrayList<SampahShow> = ArrayList()
@@ -84,7 +86,7 @@ class ScaleActivity : AppCompatActivity() {
                         listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                     }
                 } else {
-                    showDialog("Kesalahan","Gagal mendapatkan List Harga. Coba Lagi?", "OK", "CANCEL", ::setupListHargaSampah)
+                    showDialog("Kesalahan","Gagal mendapatkan List Harga. Coba Lagi?", "OK", "CANCEL", true, ::setupListHargaSampah)
                 }
             }
 
@@ -108,7 +110,7 @@ class ScaleActivity : AppCompatActivity() {
                         listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                     }
                 } else {
-                    showDialog("Kesalahan","Gagal mendapatkan Kategori Sampah. Coba Lagi?", "OK", "CANCEL", ::setupListHargaSampah)
+                    showDialog("Kesalahan","Gagal mendapatkan Kategori Sampah. Coba Lagi?", "OK", "CANCEL", true, ::setupListHargaSampah)
                 }
             }
 
@@ -156,7 +158,7 @@ class ScaleActivity : AppCompatActivity() {
             sampah.add(SampahShow(it.jenisSampah, it.jumlahSampah, it.hargaSampah, it.totalHarga))
         }
         transaksiData?.forEach {
-            dataTransaksi.add(TransaksiData(it.idSampah, it.jumlah))
+            dataTransaksi.add(TransaksiData(it.id_sampah, it.jumlah))
         }
         adapterListSampah.setData(sampah, dataTransaksi)
 
@@ -167,21 +169,51 @@ class ScaleActivity : AppCompatActivity() {
         binding.btnCancel.setOnClickListener {
             showDialog(
                 getString(R.string.sure_to_delete), getString(R.string.data_will_be_lost),
-                getString(R.string.confirm_yes), getString(R.string.confirm_no),
+                getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
                 ::finish
             )
         }
         binding.btnSubmit.setOnClickListener {
             showDialog(
                 "Submit?", "Data akan dikirim",
-                getString(R.string.confirm_yes), getString(R.string.confirm_no),
+                getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
                 ::submitSampah
             )
         }
     }
 
     private fun submitSampah() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            isLoading(true)
+            val current = LocalDateTime.now()
+            val dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+            val date = current.format(dateFormat)
+            submitData = TransaksiModel(idNasabah,date,dataTransaksi)
 
+            val retrofitInstanceSetorSampah = ApiConfig.getApiService().setorSampah(preference.getToken.toString(), submitData)
+            retrofitInstanceSetorSampah.enqueue(object: Callback<ResponseTransaksi> {
+                override fun onResponse(
+                    call: Call<ResponseTransaksi>,
+                    response: Response<ResponseTransaksi>
+                ) {
+                    isLoading(false)
+                    if(response.isSuccessful) {
+                        showDialog("Sukses", response.body()?.messages.toString(), "OK", "", false, ::finish)
+                    } else {
+                        showDialog("Error", response.message(), "OK", "", false, ::submitSampah)
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseTransaksi>, t: Throwable) {
+                    isLoading(false)
+                    showDialog("Gagal", "Telah gagal mengirim data. Ulang?", "OK", "Tidak", true, ::submitSampah)
+                }
+
+            })
+
+        } else {
+
+        }
     }
 
     private fun resetHarga() {
@@ -189,7 +221,7 @@ class ScaleActivity : AppCompatActivity() {
         binding.sumSampah.text  = "${total} Kg."
     }
 
-    private fun showDialog(titleDialog: String, messageDialog: String, confirmMessage: String, cancelMessage: String, doFunc: ()-> Unit) {
+    private fun showDialog(titleDialog: String, messageDialog: String, confirmMessage: String, cancelMessage: String?, cancelable: Boolean, doFunc: ()-> Unit) {
         AlertDialog.Builder(this).apply {
             setTitle(titleDialog)
             setMessage(messageDialog)
@@ -197,9 +229,11 @@ class ScaleActivity : AppCompatActivity() {
             setPositiveButton(confirmMessage, DialogInterface.OnClickListener { _, _ ->
                 doFunc()
             })
-            setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
-                dialog.dismiss()
-            })
+            if(cancelable) {
+                setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                })
+            }
             create()
             show()
         }
