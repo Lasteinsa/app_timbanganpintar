@@ -40,8 +40,6 @@ class ScaleActivity : AppCompatActivity() {
     private val user: ArrayList<User> = ArrayList()
     private var nameNasabah: String = ""
     private var idNasabah: String? = ""
-    private var date: String = ""
-    private var idSampah: Int = 0
     private var harga: Double = 0.0
     private var total: Double = 0.0
 
@@ -86,7 +84,6 @@ class ScaleActivity : AppCompatActivity() {
                         listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                     }
                 } else {
-                    Toast.makeText(this@ScaleActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
                     showDialog("Kesalahan","Gagal mendapatkan List Harga. Coba Lagi?", "OK", "CANCEL", ::setupListHargaSampah)
                 }
             }
@@ -111,7 +108,7 @@ class ScaleActivity : AppCompatActivity() {
                         listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                     }
                 } else {
-                    Toast.makeText(this@ScaleActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    showDialog("Kesalahan","Gagal mendapatkan Kategori Sampah. Coba Lagi?", "OK", "CANCEL", ::setupListHargaSampah)
                 }
             }
 
@@ -171,7 +168,7 @@ class ScaleActivity : AppCompatActivity() {
             showDialog(
                 getString(R.string.sure_to_delete), getString(R.string.data_will_be_lost),
                 getString(R.string.confirm_yes), getString(R.string.confirm_no),
-                ::resetSampah
+                ::finish
             )
         }
         binding.btnSubmit.setOnClickListener {
@@ -190,14 +187,6 @@ class ScaleActivity : AppCompatActivity() {
     private fun resetHarga() {
         binding.sumHarga.text   = "Rp. ${harga}"
         binding.sumSampah.text  = "${total} Kg."
-    }
-
-    private fun resetSampah() {
-        sampah.clear()
-        total = 0.0
-        harga = 0.0
-        resetHarga()
-        adapterListSampah.clearData()
     }
 
     private fun showDialog(titleDialog: String, messageDialog: String, confirmMessage: String, cancelMessage: String, doFunc: ()-> Unit) {
@@ -223,8 +212,7 @@ class ScaleActivity : AppCompatActivity() {
             total += it.jumlahSampah
             harga += (it.jumlahSampah * it.hargaSampah)
         }
-        binding.sumHarga.text   = "Rp. ${harga}"
-        binding.sumSampah.text  = "${total} Kg."
+        resetHarga()
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
