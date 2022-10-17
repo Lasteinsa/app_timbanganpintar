@@ -94,7 +94,7 @@ class ScaleActivity : AppCompatActivity() {
                 Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
-
+        utility.hideLoading()
         utility.showLoading(this,false)
         val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
         retrofitInstanceGetKategoriSampah.enqueue(object : Callback<ResponseKategoriSampah> {
