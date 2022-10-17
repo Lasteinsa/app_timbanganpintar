@@ -54,6 +54,8 @@ class ScaleActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Nasabah"
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this,R.color.teratai_main)))
+
+        resetHarga()
         setupUser()
         setupList()
         setupAction()
@@ -85,6 +87,7 @@ class ScaleActivity : AppCompatActivity() {
                     }
                 } else {
                     Toast.makeText(this@ScaleActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    showDialog("Kesalahan","Gagal mendapatkan List Harga. Coba Lagi?", "OK", "CANCEL", ::setupListHargaSampah)
                 }
             }
 
@@ -165,34 +168,18 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.btnCancel.setOnClickListener {
-            AlertDialog.Builder(this).apply {
-                setTitle(getString(R.string.sure_to_delete))
-                setMessage(getString(R.string.data_will_be_lost))
-                setCancelable(false)
-                setPositiveButton(getString(R.string.confirm_yes), DialogInterface.OnClickListener { _, _ ->
-                    resetSampah()
-                })
-                setNegativeButton(getString(R.string.confirm_no), DialogInterface.OnClickListener { dialog, _ ->
-                    dialog.dismiss()
-                })
-                create()
-                show()
-            }
+            showDialog(
+                getString(R.string.sure_to_delete), getString(R.string.data_will_be_lost),
+                getString(R.string.confirm_yes), getString(R.string.confirm_no),
+                ::resetSampah
+            )
         }
         binding.btnSubmit.setOnClickListener {
-            AlertDialog.Builder(this).apply {
-                setTitle("Submit?")
-                setMessage("test")
-                setCancelable(false)
-                setPositiveButton(getString(R.string.confirm_yes), DialogInterface.OnClickListener { _, _ ->
-                    submitSampah()
-                })
-                setNegativeButton(getString(R.string.confirm_no), DialogInterface.OnClickListener { dialog, _ ->
-                    dialog.dismiss()
-                })
-                create()
-                show()
-            }
+            showDialog(
+                "Submit?", "Data akan dikirim",
+                getString(R.string.confirm_yes), getString(R.string.confirm_no),
+                ::submitSampah
+            )
         }
     }
 
@@ -200,13 +187,33 @@ class ScaleActivity : AppCompatActivity() {
 
     }
 
+    private fun resetHarga() {
+        binding.sumHarga.text   = "Rp. ${harga}"
+        binding.sumSampah.text  = "${total} Kg."
+    }
+
     private fun resetSampah() {
         sampah.clear()
         total = 0.0
         harga = 0.0
-        binding.sumHarga.text   = "Rp. ${harga}"
-        binding.sumSampah.text  = "${total} Kg."
+        resetHarga()
         adapterListSampah.clearData()
+    }
+
+    private fun showDialog(titleDialog: String, messageDialog: String, confirmMessage: String, cancelMessage: String, doFunc: ()-> Unit) {
+        AlertDialog.Builder(this).apply {
+            setTitle(titleDialog)
+            setMessage(messageDialog)
+            setCancelable(false)
+            setPositiveButton(confirmMessage, DialogInterface.OnClickListener { _, _ ->
+                doFunc()
+            })
+            setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+            })
+            create()
+            show()
+        }
     }
 
     private fun reCalculatePlease() {
