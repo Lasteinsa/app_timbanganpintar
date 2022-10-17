@@ -29,4 +29,15 @@
     <string name="data_will_be_lost">Data yang belum disimpan akan hilang</string>
     <string name="sure_to_delete">Yakin ingin menghapus?</string>
     <string name="choose_trash_category">Pilih Jenis Sampah</string>
+    <string name="failed">Kesalahan</string>
+    <string name="failed_get_list_price">Gagal mendapatkan List Harga. Coba Lagi?</string>
+    <string name="OK">OK</string>
+    <string name="CANCEL">CANCEL</string>
+    <string name="failed_get_category_sampah">Gagal mendapatkan Kategori Sampah. Coba Lagi?</string>
+    <string name="success">Sukses</string>
+    <string name="error">Error</string>
+    <string name="failed_send_data">Gagal mengirim data. Kirim ulang?</string>
+    <string name="bigno">TIDAK</string>
+    <string name="want_submit">Submit?</string>
+    <string name="data_will_be_send">Data akan dikirim</string>
 </resources>

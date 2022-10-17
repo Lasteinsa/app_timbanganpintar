@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
+import com.banksampahteratai.data.Const.Companion.LIST_HARGA_SAMPAH
+import com.banksampahteratai.data.Const.Companion.SAMPAH
+import com.banksampahteratai.data.Const.Companion.SAMPAH_SHOW
 import com.banksampahteratai.data.model.KategoriSampahModel
 import com.banksampahteratai.data.model.SampahModel
 import com.banksampahteratai.data.model.SampahShow
@@ -21,7 +24,6 @@ class AddListenerActivity : AppCompatActivity() {
     private var kategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private var sampah: ArrayList<TransaksiData> = ArrayList()
     private var sampahShow: ArrayList<SampahShow> = ArrayList()
-    private var idSampah: Int = 0
     private var namaJenis: String = ""
     val listKategori = mutableListOf<String?>()
     val listJenis    = mutableListOf<String>()
@@ -36,8 +38,8 @@ class AddListenerActivity : AppCompatActivity() {
     }
 
     private fun setupKategori() {
-        val getListHargaSampah = intent.extras?.getParcelableArrayList<SampahModel>("listHargaSampah")
-        val getKategoriSampah = intent.extras?.getParcelableArrayList<KategoriSampahModel>("kategoriSampah")
+        val getListHargaSampah = intent.extras?.getParcelableArrayList<SampahModel>(LIST_HARGA_SAMPAH)
+        val getKategoriSampah = intent.extras?.getParcelableArrayList<KategoriSampahModel>(KATEGORI_SAMPAH)
 
         getListHargaSampah?.forEach {
             listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
@@ -95,8 +97,8 @@ class AddListenerActivity : AppCompatActivity() {
                     sampahShow.add(newSampahShow)
                 }
             }
-            intent.putExtra("sampah", sampah)
-            intent.putExtra("sampahShow", sampahShow)
+            intent.putExtra(SAMPAH, sampah)
+            intent.putExtra(SAMPAH_SHOW, sampahShow)
             setResult(Activity.RESULT_OK,intent)
             finish()
         }

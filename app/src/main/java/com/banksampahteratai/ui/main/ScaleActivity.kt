@@ -16,13 +16,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
+import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
+import com.banksampahteratai.data.Const.Companion.LIST_HARGA_SAMPAH
+import com.banksampahteratai.data.Const.Companion.SAMPAH
+import com.banksampahteratai.data.Const.Companion.SAMPAH_SHOW
+import com.banksampahteratai.data.Const.Companion.USER
 import com.banksampahteratai.data.DataPreference
-import com.banksampahteratai.data.api.*
+import com.banksampahteratai.data.api.ApiConfig
+import com.banksampahteratai.data.api.ResponseDataSampah
+import com.banksampahteratai.data.api.ResponseKategoriSampah
+import com.banksampahteratai.data.api.ResponseTransaksi
 import com.banksampahteratai.data.model.*
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,7 +92,7 @@ class ScaleActivity : AppCompatActivity() {
                         listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                     }
                 } else {
-                    showDialog("Kesalahan","Gagal mendapatkan List Harga. Coba Lagi?", "OK", "CANCEL", true, ::setupListHargaSampah)
+                    showDialog(getString(R.string.failed),getString(R.string.failed_get_list_price), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
                 }
             }
 
@@ -110,7 +116,7 @@ class ScaleActivity : AppCompatActivity() {
                         listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                     }
                 } else {
-                    showDialog("Kesalahan","Gagal mendapatkan Kategori Sampah. Coba Lagi?", "OK", "CANCEL", true, ::setupListHargaSampah)
+                    showDialog(getString(R.string.failed),getString(R.string.failed_get_category_sampah), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
                 }
             }
 
@@ -123,7 +129,7 @@ class ScaleActivity : AppCompatActivity() {
     }
 
     private fun setupUser() {
-        val userData = intent.extras?.getParcelableArrayList<User>("user")
+        val userData = intent.extras?.getParcelableArrayList<User>(USER)
         userData?.forEach { dataUser ->
             user.add(User(dataUser.id, dataUser.namaLengkap))
             idNasabah   = dataUser.id
@@ -175,7 +181,7 @@ class ScaleActivity : AppCompatActivity() {
         }
         binding.btnSubmit.setOnClickListener {
             showDialog(
-                "Submit?", "Data akan dikirim",
+                getString(R.string.want_submit), getString(R.string.data_will_be_send),
                 getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
                 ::submitSampah
             )
@@ -198,15 +204,15 @@ class ScaleActivity : AppCompatActivity() {
                 ) {
                     isLoading(false)
                     if(response.isSuccessful) {
-                        showDialog("Sukses", response.body()?.messages.toString(), "OK", "", false, ::finish)
+                        showDialog(getString(R.string.success), response.body()?.messages.toString(), getString(R.string.OK), "", false, ::finish)
                     } else {
-                        showDialog("Error", response.message(), "OK", "", false, ::submitSampah)
+                        showDialog(getString(R.string.error), response.message(), getString(R.string.OK), "", false, ::submitSampah)
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseTransaksi>, t: Throwable) {
                     isLoading(false)
-                    showDialog("Gagal", "Telah gagal mengirim data. Ulang?", "OK", "Tidak", true, ::submitSampah)
+                    showDialog(getString(R.string.failed), getString(R.string.failed_send_data), getString(R.string.OK), getString(R.string.bigno), true, ::submitSampah)
                 }
 
             })
@@ -252,14 +258,14 @@ class ScaleActivity : AppCompatActivity() {
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val sampahData = if (Build.VERSION.SDK_INT >= 33) {
-                result.data?.extras?.getParcelableArrayList("sampah", TransaksiData::class.java)
+                result.data?.extras?.getParcelableArrayList(SAMPAH, TransaksiData::class.java)
             } else {
-                result.data?.extras?.getParcelableArrayList("sampah")
+                result.data?.extras?.getParcelableArrayList(SAMPAH)
             }
             val sampahShow = if (Build.VERSION.SDK_INT >= 33) {
-                result.data?.extras?.getParcelableArrayList<SampahShow>("sampahShow", SampahShow::class.java)
+                result.data?.extras?.getParcelableArrayList<SampahShow>(SAMPAH_SHOW, SampahShow::class.java)
             } else {
-                result.data?.extras?.getParcelableArrayList("sampahShow")
+                result.data?.extras?.getParcelableArrayList(SAMPAH_SHOW)
             }
             setupRecycleSampah(sampahShow, sampahData)
         }
@@ -267,8 +273,8 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun openAddListenerActivity() {
         val intent = Intent(this, AddListenerActivity::class.java)
-        intent.putParcelableArrayListExtra("listHargaSampah", listHargaSampah)
-        intent.putParcelableArrayListExtra("kategoriSampah", listKategoriSampah)
+        intent.putParcelableArrayListExtra(LIST_HARGA_SAMPAH, listHargaSampah)
+        intent.putParcelableArrayListExtra(KATEGORI_SAMPAH, listKategoriSampah)
         resultLauncher.launch(intent)
     }
 
