@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
+import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseLogin
 import com.banksampahteratai.databinding.ActivityLoginBinding
@@ -27,6 +28,7 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var utility: Utility
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         loginViewModel = LoginViewModel(DataPreference(this))
+        utility = Utility()
         playAnimation()
         setupAction()
     }
@@ -57,15 +60,6 @@ class LoginActivity : AppCompatActivity() {
                 imageLogin, textWelcome, usernameInput, passwordInput, loginButton
             )
             start()
-        }
-    }
-
-    private fun isLoading(load: Boolean) {
-        if(load) {
-            binding.loadingLogin.root.visibility = View.VISIBLE
-            binding.loadingLogin.root.bringToFront()
-        } else {
-            binding.loadingLogin.root.visibility = View.INVISIBLE
         }
     }
 
@@ -100,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
                 binding.inpPassword.error   = getString(R.string.password_cannot_empty)
             }
             else -> {
-                isLoading(true)
+                utility.showLoading(this, false)
                 this.currentFocus?.let {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                     imm?.hideSoftInputFromWindow(it.windowToken, 0)
@@ -116,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
                         call: Call<ResponseLogin>,
                         response: Response<ResponseLogin>
                     ) {
-                        isLoading(false)
+                        utility.hideLoading()
                         val responseBody    = response.body()
                         if(responseBody?.error == false) {
                             loginViewModel.login(responseBody)
@@ -141,7 +135,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                     override fun onFailure(call: Call<ResponseLogin>, t: Throwable) {
-                        isLoading(false)
+                        utility.hideLoading()
                         Toast.makeText(this@LoginActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })

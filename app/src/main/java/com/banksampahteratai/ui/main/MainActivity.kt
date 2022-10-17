@@ -37,10 +37,13 @@ class MainActivity : AppCompatActivity() {
         mainViewModel   = MainViewModel(preference)
         supportActionBar?.hide()
 
+        utility = Utility()
+        utility.showLoading(this, false)
         if(preference.isLogin) {
-            utility = Utility()
             utility.checkAuth(preference, this@MainActivity)
+            utility.hideLoading()
         } else {
+            utility.hideLoading()
             val intent = Intent(this@MainActivity, LoginActivity::class.java).apply {
                 flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -66,14 +69,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isLoading(load: Boolean) {
-        if(load) {
-            binding.loadingLogin.root.visibility = View.VISIBLE
-            binding.loadingLogin.root.bringToFront()
-        } else {
-            binding.loadingLogin.root.visibility = View.INVISIBLE
-        }
-    }
+//    private fun isLoading(load: Boolean) {
+//        if(load) {
+//            binding.loadingLogin.root.visibility = View.VISIBLE
+//            binding.loadingLogin.root.bringToFront()
+//        } else {
+//            binding.loadingLogin.root.visibility = View.INVISIBLE
+//        }
+//    }
 
     private fun setupAction() {
         binding.searchUser.setOnClickListener {
@@ -81,7 +84,8 @@ class MainActivity : AppCompatActivity() {
         }
         binding.searchUser.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                isLoading(true)
+//                isLoading(true)
+                utility.showLoading(this@MainActivity,false)
                 searchUsers(p0)
                 return false
             }
@@ -101,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                 response: Response<ResponseSearchUsers>
             ) {
                 if(response.isSuccessful) {
-                    isLoading(false)
+//                    isLoading(false)
+                    utility.hideLoading()
                     val responseBody = response.body()
                     if(responseBody != null) {
                         val data = ArrayList<User>()
@@ -113,7 +118,8 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 } else {
-                    isLoading(false)
+//                    isLoading(false)
+                    utility.hideLoading()
                     alertInfo(true)
                     if(response.code() == 404) {
                         binding.loginInfoAlert.setBackgroundResource(R.drawable.alert_warning)
@@ -131,7 +137,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseSearchUsers>, t: Throwable) {
-                isLoading(false)
+//                isLoading(false)
+                utility.hideLoading()
                 Toast.makeText(this@MainActivity, "Tidak ada Internet", Toast.LENGTH_SHORT).show()
             }
 

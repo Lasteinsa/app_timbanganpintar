@@ -1,8 +1,13 @@
 package com.banksampahteratai.data
 
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.util.Log
+import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.banksampahteratai.R
@@ -14,6 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class Utility {
+    private var dialog: Dialog? = null
     fun checkAuth(preference: DataPreference, context: Context) {
         val currentToken = preference.getToken ?: "expired"
         val removeToken: (DataPreference) -> Unit = {
@@ -64,6 +70,44 @@ class Utility {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(intent)
+        }
+    }
+
+    fun showLoading(context: Context, cancelable: Boolean) {
+        dialog  = Dialog(context)
+        dialog?.setContentView(R.layout.loading)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.setCancelable(cancelable)
+        try {
+            dialog?.show()
+        } catch (e: Exception) {
+            Log.d("loadingError", e.toString())
+        }
+    }
+
+    fun hideLoading() {
+        try {
+            dialog?.dismiss()
+        } catch (e: Exception) {
+            Log.d("loadingError", e.toString())
+        }
+    }
+
+    fun showDialog(context: Context, titleDialog: String, messageDialog: String, confirmMessage: String, cancelMessage: String?, cancelable: Boolean, doFunc: ()-> Unit) {
+        AlertDialog.Builder(context).apply {
+            setTitle(titleDialog)
+            setMessage(messageDialog)
+            setCancelable(false)
+            setPositiveButton(confirmMessage, DialogInterface.OnClickListener { _, _ ->
+                doFunc()
+            })
+            if(cancelable) {
+                setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                })
+            }
+            create()
+            show()
         }
     }
 }

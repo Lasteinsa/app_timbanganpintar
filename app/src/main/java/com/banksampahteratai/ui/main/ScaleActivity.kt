@@ -22,6 +22,7 @@ import com.banksampahteratai.data.Const.Companion.SAMPAH
 import com.banksampahteratai.data.Const.Companion.SAMPAH_SHOW
 import com.banksampahteratai.data.Const.Companion.USER
 import com.banksampahteratai.data.DataPreference
+import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseDataSampah
 import com.banksampahteratai.data.api.ResponseKategoriSampah
@@ -37,6 +38,7 @@ import java.time.format.DateTimeFormatter
 
 class ScaleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScaleBinding
+    private lateinit var utility: Utility
     private lateinit var adapterListSampah: AdapterListSampah
     private lateinit var adapterList: RecyclerView
     private lateinit var preference: DataPreference
@@ -56,8 +58,8 @@ class ScaleActivity : AppCompatActivity() {
         binding = ActivityScaleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        preference = DataPreference(this)
-
+        preference  = DataPreference(this)
+        utility     = Utility()
         supportActionBar?.title = "Nasabah"
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this,R.color.teratai_main)))
 
@@ -68,60 +70,51 @@ class ScaleActivity : AppCompatActivity() {
         setupListHargaSampah()
     }
 
-    private fun isLoading(load: Boolean) {
-        if(load) {
-            binding.loadingLogin.root.visibility = View.VISIBLE
-            binding.loadingLogin.root.bringToFront()
-        } else {
-            binding.loadingLogin.root.visibility = View.INVISIBLE
-        }
-    }
-
     private fun setupListHargaSampah() {
-        isLoading(true)
+        utility.showLoading(this,false)
         val retrofitInstanceGetListHargaSampah = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
         retrofitInstanceGetListHargaSampah.enqueue(object: Callback<ResponseDataSampah> {
             override fun onResponse(
                 call: Call<ResponseDataSampah>,
                 response: Response<ResponseDataSampah>
             ) {
-                isLoading(false)
+                utility.hideLoading()
                 if(response.isSuccessful) {
                     val responseBody = response.body()?.data
                     responseBody?.forEach {
                         listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                     }
                 } else {
-                    showDialog(getString(R.string.failed),getString(R.string.failed_get_list_price), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
+                    utility.showDialog(this@ScaleActivity,getString(R.string.failed),getString(R.string.failed_get_list_price), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
                 }
             }
 
             override fun onFailure(call: Call<ResponseDataSampah>, t: Throwable) {
-                isLoading(false)
+                utility.hideLoading()
                 Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
 
-        isLoading(true)
+        utility.showLoading(this,false)
         val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
         retrofitInstanceGetKategoriSampah.enqueue(object : Callback<ResponseKategoriSampah> {
             override fun onResponse(
                 call: Call<ResponseKategoriSampah>,
                 response: Response<ResponseKategoriSampah>
             ) {
-                isLoading(false)
+                utility.hideLoading()
                 if(response.isSuccessful) {
                     val responseBody = response.body()?.data
                     responseBody?.forEach {
                         listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                     }
                 } else {
-                    showDialog(getString(R.string.failed),getString(R.string.failed_get_category_sampah), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
+                    utility.showDialog(this@ScaleActivity, getString(R.string.failed),getString(R.string.failed_get_category_sampah), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
                 }
             }
 
             override fun onFailure(call: Call<ResponseKategoriSampah>, t: Throwable) {
-                isLoading(false)
+                utility.hideLoading()
                 Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
 
@@ -173,14 +166,16 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.btnCancel.setOnClickListener {
-            showDialog(
+            utility.showDialog(
+                this@ScaleActivity,
                 getString(R.string.sure_to_delete), getString(R.string.data_will_be_lost),
                 getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
                 ::finish
             )
         }
         binding.btnSubmit.setOnClickListener {
-            showDialog(
+            utility.showDialog(
+                this,
                 getString(R.string.want_submit), getString(R.string.data_will_be_send),
                 getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
                 ::submitSampah
@@ -190,7 +185,7 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun submitSampah() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            isLoading(true)
+            utility.showLoading(this,false)
             val current = LocalDateTime.now()
             val dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
             val date = current.format(dateFormat)
@@ -202,17 +197,17 @@ class ScaleActivity : AppCompatActivity() {
                     call: Call<ResponseTransaksi>,
                     response: Response<ResponseTransaksi>
                 ) {
-                    isLoading(false)
+                    utility.hideLoading()
                     if(response.isSuccessful) {
-                        showDialog(getString(R.string.success), response.body()?.messages.toString(), getString(R.string.OK), "", false, ::finish)
+                        utility.showDialog(this@ScaleActivity,getString(R.string.success), response.body()?.messages.toString(), getString(R.string.OK), "", false, ::finish)
                     } else {
-                        showDialog(getString(R.string.error), response.message(), getString(R.string.OK), "", false, ::submitSampah)
+                        utility.showDialog(this@ScaleActivity, getString(R.string.error), response.message(), getString(R.string.OK), "", false, ::submitSampah)
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseTransaksi>, t: Throwable) {
-                    isLoading(false)
-                    showDialog(getString(R.string.failed), getString(R.string.failed_send_data), getString(R.string.OK), getString(R.string.bigno), true, ::submitSampah)
+                    utility.hideLoading()
+                    utility.showDialog(this@ScaleActivity, getString(R.string.failed), getString(R.string.failed_send_data), getString(R.string.OK), getString(R.string.bigno), true, ::submitSampah)
                 }
 
             })
@@ -225,24 +220,6 @@ class ScaleActivity : AppCompatActivity() {
     private fun resetHarga() {
         binding.sumHarga.text   = "Rp. ${harga}"
         binding.sumSampah.text  = "${total} Kg."
-    }
-
-    private fun showDialog(titleDialog: String, messageDialog: String, confirmMessage: String, cancelMessage: String?, cancelable: Boolean, doFunc: ()-> Unit) {
-        AlertDialog.Builder(this).apply {
-            setTitle(titleDialog)
-            setMessage(messageDialog)
-            setCancelable(false)
-            setPositiveButton(confirmMessage, DialogInterface.OnClickListener { _, _ ->
-                doFunc()
-            })
-            if(cancelable) {
-                setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
-                    dialog.dismiss()
-                })
-            }
-            create()
-            show()
-        }
     }
 
     private fun reCalculatePlease() {
