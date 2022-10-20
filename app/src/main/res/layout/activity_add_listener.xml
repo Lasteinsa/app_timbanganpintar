@@ -50,6 +50,30 @@
         app:layout_constraintStart_toStartOf="@+id/tv_jenis_sampah"
         app:layout_constraintTop_toBottomOf="@+id/tv_jenis_sampah" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inp_jumlah"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/weight_in_kg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_jenis_sampah"
+        app:layout_constraintTop_toBottomOf="@+id/jenis_sampah"
+        app:startIconDrawable="@drawable/scale">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_jumlah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:enabled="false"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -86,5 +110,16 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btn_edit_berat"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_login_rounded"
+        android:text="@string/edit"
+        app:layout_constraintEnd_toEndOf="@+id/inp_jumlah"
+        app:layout_constraintStart_toStartOf="@+id/inp_jumlah"
+        app:layout_constraintTop_toBottomOf="@+id/inp_jumlah" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

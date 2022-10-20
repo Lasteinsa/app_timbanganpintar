@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.banksampahteratai.R
 import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
 import com.banksampahteratai.data.Const.Companion.LIST_HARGA_SAMPAH
 import com.banksampahteratai.data.Const.Companion.SAMPAH
 import com.banksampahteratai.data.Const.Companion.SAMPAH_SHOW
+import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.model.KategoriSampahModel
 import com.banksampahteratai.data.model.SampahModel
 import com.banksampahteratai.data.model.SampahShow
@@ -20,11 +23,13 @@ import com.banksampahteratai.databinding.ActivityAddListenerBinding
 class AddListenerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddListenerBinding
     private lateinit var arrayAdapter: ArrayAdapter<String>
+    private lateinit var utility: Utility
     private var listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private var kategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private var sampah: ArrayList<TransaksiData> = ArrayList()
     private var sampahShow: ArrayList<SampahShow> = ArrayList()
     private var namaJenis: String = ""
+    private var beratSampah: Double = 5.050
     val listKategori = mutableListOf<String?>()
     val listJenis    = mutableListOf<String>()
 
@@ -33,8 +38,11 @@ class AddListenerActivity : AppCompatActivity() {
         binding = ActivityAddListenerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        utility = Utility()
+
         setupKategori()
         setupAction()
+        binding.inputJumlah.setText(beratSampah.toString())
     }
 
     private fun setupKategori() {
@@ -71,7 +79,7 @@ class AddListenerActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                utility.showSnackbar(this@AddListenerActivity, binding.root, getString(R.string.please_choose), true)
             }
 
         }
@@ -80,17 +88,20 @@ class AddListenerActivity : AppCompatActivity() {
     private fun setupAction() {
         binding.submitIt.setOnClickListener {
             val intent = Intent(this@AddListenerActivity, ScaleActivity::class.java)
-            val jumlah = 5
+
+//            binding.inputJumlah.setText(9.9.toString())
 
             namaJenis = binding.jenisSampah.selectedItem.toString()
+
+            beratSampah = binding.inputJumlah.text.toString().toDouble()
 
             listHargaSampah.forEach {
                 if(it.jenis == namaJenis) {
                     val jenisSampahShow     = it.jenis
-                    val jumlahSampahShow    = jumlah.toDouble()
+                    val jumlahSampahShow    = beratSampah
                     val hargaSampahShow     = it.harga!!
                     val totalHargaShow      = jumlahSampahShow * hargaSampahShow
-                    val newDataSampah = TransaksiData(it.id, jumlah.toString())
+                    val newDataSampah = TransaksiData(it.id, beratSampah.toString())
                     val newSampahShow = SampahShow(jenisSampahShow, jumlahSampahShow, hargaSampahShow, totalHargaShow)
 
                     sampah.add(newDataSampah)
@@ -101,6 +112,10 @@ class AddListenerActivity : AppCompatActivity() {
             intent.putExtra(SAMPAH_SHOW, sampahShow)
             setResult(Activity.RESULT_OK,intent)
             finish()
+        }
+        binding.btnEditBerat.setOnClickListener {
+        val isBeratEnabled = binding.inputJumlah.isEnabled
+            binding.inputJumlah.isEnabled = !isBeratEnabled
         }
         binding.cancelIt.setOnClickListener {
             finish()

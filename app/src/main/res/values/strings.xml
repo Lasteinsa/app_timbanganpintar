@@ -42,4 +42,8 @@
     <string name="data_will_be_send">Data akan dikirim</string>
     <string name="no_internet">Tidak Ada Internet</string>
     <string name="session_go_login">Sesi Telah Habis. Silahkan Login Kembali</string>
+    <string name="_0_00_kg">0.00 KG</string>
+    <string name="weight_in_kg">Berat dalam KG</string>
+    <string name="edit">Edit</string>
+    <string name="please_choose">Silahkan pilih</string>
 </resources>
