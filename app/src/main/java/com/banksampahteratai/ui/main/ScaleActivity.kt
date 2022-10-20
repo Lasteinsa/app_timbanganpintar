@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -72,50 +74,73 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupListHargaSampah() {
         utility.showLoading(this,false)
+
+        getListHargaSampah()
+        getKategoriSampah()
+
+        utility.hideLoading()
+    }
+
+    private fun getListHargaSampah() {
         val retrofitInstanceGetListHargaSampah = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
         retrofitInstanceGetListHargaSampah.enqueue(object: Callback<ResponseDataSampah> {
             override fun onResponse(
                 call: Call<ResponseDataSampah>,
                 response: Response<ResponseDataSampah>
             ) {
-                utility.hideLoading()
                 if(response.isSuccessful) {
+                    utility.hideLoading()
                     val responseBody = response.body()?.data
                     responseBody?.forEach {
                         listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                     }
                 } else {
-                    utility.showDialog(this@ScaleActivity,getString(R.string.failed),getString(R.string.failed_get_list_price), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
+                    utility.hideLoading()
+                    utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        getListHargaSampah()
+                    }, 5000)
                 }
             }
 
             override fun onFailure(call: Call<ResponseDataSampah>, t: Throwable) {
                 utility.hideLoading()
-                Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    getListHargaSampah()
+                }, 5000)
             }
         })
-        utility.hideLoading()
-        utility.showLoading(this,false)
+    }
+
+    private fun getKategoriSampah() {
         val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
         retrofitInstanceGetKategoriSampah.enqueue(object : Callback<ResponseKategoriSampah> {
             override fun onResponse(
                 call: Call<ResponseKategoriSampah>,
                 response: Response<ResponseKategoriSampah>
             ) {
-                utility.hideLoading()
                 if(response.isSuccessful) {
+                    utility.hideLoading()
                     val responseBody = response.body()?.data
                     responseBody?.forEach {
                         listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                     }
                 } else {
-                    utility.showDialog(this@ScaleActivity, getString(R.string.failed),getString(R.string.failed_get_category_sampah), getString(R.string.OK), getString(R.string.CANCEL), true, ::setupListHargaSampah)
+                    utility.hideLoading()
+                    utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        getKategoriSampah()
+                    }, 5000)
                 }
             }
 
             override fun onFailure(call: Call<ResponseKategoriSampah>, t: Throwable) {
                 utility.hideLoading()
-                Toast.makeText(this@ScaleActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    getKategoriSampah()
+                }, 5000)
             }
 
         })
