@@ -46,4 +46,5 @@
     <string name="weight_in_kg">Berat dalam KG</string>
     <string name="edit">Edit</string>
     <string name="please_choose">Silahkan pilih</string>
+    <string name="satuan">Satuan</string>
 </resources>

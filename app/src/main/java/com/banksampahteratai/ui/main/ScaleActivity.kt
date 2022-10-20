@@ -73,15 +73,12 @@ class ScaleActivity : AppCompatActivity() {
     }
 
     private fun setupListHargaSampah() {
-        utility.showLoading(this,false)
-
         getListHargaSampah()
         getKategoriSampah()
-
-        utility.hideLoading()
     }
 
     private fun getListHargaSampah() {
+        utility.showLoading(this,false)
         val retrofitInstanceGetListHargaSampah = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
         retrofitInstanceGetListHargaSampah.enqueue(object: Callback<ResponseDataSampah> {
             override fun onResponse(
@@ -114,6 +111,7 @@ class ScaleActivity : AppCompatActivity() {
     }
 
     private fun getKategoriSampah() {
+        utility.showLoading(this,false)
         val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
         retrofitInstanceGetKategoriSampah.enqueue(object : Callback<ResponseKategoriSampah> {
             override fun onResponse(

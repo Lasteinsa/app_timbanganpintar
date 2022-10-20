@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -24,6 +26,9 @@ class AddListenerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddListenerBinding
     private lateinit var arrayAdapter: ArrayAdapter<String>
     private lateinit var utility: Utility
+
+    private lateinit var bounceAnim: Animation
+
     private var listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private var kategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private var sampah: ArrayList<TransaksiData> = ArrayList()
@@ -40,9 +45,14 @@ class AddListenerActivity : AppCompatActivity() {
 
         utility = Utility()
 
+        setupAnimation()
         setupKategori()
         setupAction()
         binding.inputJumlah.setText(beratSampah.toString())
+    }
+
+    private fun setupAnimation() {
+        bounceAnim = AnimationUtils.loadAnimation(this, R.anim.bounce)
     }
 
     private fun setupKategori() {
@@ -114,7 +124,8 @@ class AddListenerActivity : AppCompatActivity() {
             finish()
         }
         binding.btnEditBerat.setOnClickListener {
-        val isBeratEnabled = binding.inputJumlah.isEnabled
+            binding.btnEditBerat.startAnimation(bounceAnim)
+            val isBeratEnabled = binding.inputJumlah.isEnabled
             binding.inputJumlah.isEnabled = !isBeratEnabled
         }
         binding.cancelIt.setOnClickListener {

@@ -58,7 +58,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="@string/weight_in_kg"
+        android:hint="@string/satuan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_jenis_sampah"
         app:layout_constraintTop_toBottomOf="@+id/jenis_sampah"
