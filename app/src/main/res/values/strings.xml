@@ -41,4 +41,5 @@
     <string name="want_submit">Submit?</string>
     <string name="data_will_be_send">Data akan dikirim</string>
     <string name="no_internet">Tidak Ada Internet</string>
+    <string name="session_go_login">Sesi Telah Habis. Silahkan Login Kembali</string>
 </resources>

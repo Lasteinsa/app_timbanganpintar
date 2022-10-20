@@ -7,15 +7,19 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.postDelayed
 import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import com.banksampahteratai.R
@@ -29,14 +33,9 @@ import retrofit2.Response
 
 class Utility {
     private var dialog: Dialog? = null
-    fun checkAuth(preference: DataPreference, context: Context) {
-        val currentToken = preference.getToken ?: "expired"
-        val removeToken: (DataPreference) -> Unit = {
-            it.apply {
-                setPreferenceString(DataPreference.TOKEN, "")
-                setPreferenceBoolean(DataPreference.STATE_KEY, false)
-            }
-        }
+    private var iteration = 0
+    fun checkAuth(preference: DataPreference, context: Context, view: View) {
+        val currentToken = preference.getToken ?: "this program made by Einsa Kaslanov"
         val retrofitInstance = ApiConfig.getApiService().sessionCheck(currentToken)
 
         retrofitInstance.enqueue(object: Callback<ResponseSessionAuth> {
@@ -50,12 +49,7 @@ class Utility {
                         setMessage(context.getString(R.string.session_ended_please_login))
                         setCancelable(false)
                         setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                            removeToken(preference)
-                            val intent = Intent(context, LoginActivity::class.java).apply {
-                                flags =
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            }
-                            context.startActivity(intent)
+                           removeAllSession(preference, context)
                         })
                         create()
                         show()
@@ -64,22 +58,45 @@ class Utility {
             }
 
             override fun onFailure(call: Call<ResponseSessionAuth>, t: Throwable) {
-                removeToken(preference)
-                val intent = Intent(context, LoginActivity::class.java).apply{
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                context.startActivity(intent)
-                Toast.makeText(context, context.getString(R.string.unknown_error), Toast.LENGTH_SHORT).show()
+                showSnackbar(context, view, "Tidak Ada Internet. Sisa Percobaan ${5 - iteration}x", true)
+                Handler(Looper.getMainLooper()).postDelayed(
+                    {
+                        iteration += 1
+                        if(iteration < 5) {
+                            checkAuth(preference, context, view)
+                        } else {
+                            iteration = 0
+                            showSnackbar(context, view, context.getString(R.string.session_go_login), true)
+                            Handler(Looper.getMainLooper()).postDelayed(
+                                {
+                                    removeAllSession(preference, context)
+                                }, 5000
+                            )
+                        }
+                    }, 5000
+                )
             }
         })
 
         if(!preference.isLogin) {
-            removeToken(preference)
-            val intent = Intent(context, LoginActivity::class.java).apply{
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(intent)
+            removeAllSession(preference, context)
         }
+    }
+
+    fun removeAllSession(preference: DataPreference, context: Context) {
+        val removeToken: (DataPreference) -> Unit = {
+            it.apply {
+                setPreferenceString(DataPreference.TOKEN, "")
+                setPreferenceBoolean(DataPreference.STATE_KEY, false)
+            }
+        }
+
+        removeToken(preference)
+        val intent = Intent(context, LoginActivity::class.java).apply {
+            flags =
+                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
     }
 
     fun showLoading(context: Context, cancelable: Boolean) {
@@ -121,17 +138,17 @@ class Utility {
     }
 
     fun showSnackbar(context: Context, view: View, text: String, isDanger: Boolean) {
-        val snackbar                = Snackbar.make(view, text, Snackbar.LENGTH_LONG)
-        val customSnackView: View   = View.inflate(context,R.layout.danger_alert_info,null)
-        val snackbarLayout          = snackbar.view as Snackbar.SnackbarLayout
+        val snackbar: Snackbar  = Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+        val view                = snackbar.view
+        val params              = view.layoutParams as FrameLayout.LayoutParams
+        params.gravity          = Gravity.TOP
+        view.layoutParams       = params
         snackbar.setTextColor(context.getColor(R.color.white))
         if(isDanger) {
             snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_danger, null)
         } else {
             snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_warning, null)
         }
-        snackbarLayout.setPadding(0, 0, 0, 0)
-        snackbarLayout.addView(customSnackView, 0)
         snackbar.show()
     }
 }

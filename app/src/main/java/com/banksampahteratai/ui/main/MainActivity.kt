@@ -1,13 +1,7 @@
 package com.banksampahteratai.ui.main
 
-import android.animation.ObjectAnimator
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.R
 import com.banksampahteratai.data.Const.Companion.USER
@@ -22,6 +16,7 @@ import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -41,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         utility = Utility()
         utility.showLoading(this, false)
         if(preference.isLogin) {
-            utility.checkAuth(preference, this@MainActivity)
+            utility.checkAuth(preference, this@MainActivity, binding.root)
             utility.hideLoading()
         } else {
             utility.hideLoading()

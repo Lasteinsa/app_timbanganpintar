@@ -116,7 +116,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                     override fun onFailure(call: Call<ResponseLogin>, t: Throwable) {
                         utility.hideLoading()
-                        Toast.makeText(this@LoginActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        utility.showSnackbar(this@LoginActivity, binding.root, "Tidak Ada Internet!", true)
                     }
                 })
             }
