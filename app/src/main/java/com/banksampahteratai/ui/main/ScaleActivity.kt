@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -32,19 +33,26 @@ import com.banksampahteratai.data.api.ResponseTransaksi
 import com.banksampahteratai.data.model.*
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class ScaleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScaleBinding
     private lateinit var utility: Utility
+    private lateinit var executor: ExecutorService
     private lateinit var adapterListSampah: AdapterListSampah
     private lateinit var adapterList: RecyclerView
     private lateinit var preference: DataPreference
     private lateinit var submitData: TransaksiModel
+    private val handler = Handler(Looper.getMainLooper())
     private val listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private val listKategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private val sampah: ArrayList<SampahShow> = ArrayList()
@@ -65,6 +73,8 @@ class ScaleActivity : AppCompatActivity() {
         supportActionBar?.title = "Nasabah"
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this,R.color.teratai_main)))
 
+        executor = Executors.newSingleThreadExecutor()
+
         resetHarga()
         setupUser()
         setupList()
@@ -73,75 +83,51 @@ class ScaleActivity : AppCompatActivity() {
     }
 
     private fun setupListHargaSampah() {
-        getListHargaSampah()
-        getKategoriSampah()
+        utility.showLoading(this@ScaleActivity, false)
+        executor.execute {
+            getListHargaSampah()
+            getKategoriSampah()
+
+            handler.post {
+                utility.hideLoading()
+            }
+        }
     }
 
     private fun getListHargaSampah() {
-        utility.showLoading(this,false)
         val retrofitInstanceGetListHargaSampah = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
-        retrofitInstanceGetListHargaSampah.enqueue(object: Callback<ResponseDataSampah> {
-            override fun onResponse(
-                call: Call<ResponseDataSampah>,
-                response: Response<ResponseDataSampah>
-            ) {
-                if(response.isSuccessful) {
-                    utility.hideLoading()
-                    val responseBody = response.body()?.data
-                    responseBody?.forEach {
-                        listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
-                    }
-                } else {
-                    utility.hideLoading()
-                    utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        getListHargaSampah()
-                    }, 5000)
-                }
-            }
 
-            override fun onFailure(call: Call<ResponseDataSampah>, t: Throwable) {
-                utility.hideLoading()
+        try {
+            val response: Response<ResponseDataSampah> = retrofitInstanceGetListHargaSampah.execute()
+            if(response.isSuccessful) {
+                response.body()?.data?.forEach {
+                    listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
+                }
+            } else {
                 utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    getListHargaSampah()
-                }, 5000)
             }
-        })
+        } catch (e: IOException) {
+            utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
+            Log.d("hihi", e.toString())
+        }
     }
 
     private fun getKategoriSampah() {
-        utility.showLoading(this,false)
         val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
-        retrofitInstanceGetKategoriSampah.enqueue(object : Callback<ResponseKategoriSampah> {
-            override fun onResponse(
-                call: Call<ResponseKategoriSampah>,
-                response: Response<ResponseKategoriSampah>
-            ) {
-                if(response.isSuccessful) {
-                    utility.hideLoading()
-                    val responseBody = response.body()?.data
-                    responseBody?.forEach {
-                        listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
-                    }
-                } else {
-                    utility.hideLoading()
-                    utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        getKategoriSampah()
-                    }, 5000)
+
+        try {
+            val response: Response<ResponseKategoriSampah> = retrofitInstanceGetKategoriSampah.execute()
+            if(response.isSuccessful) {
+                response.body()?.data?.forEach {
+                    listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                 }
-            }
-
-            override fun onFailure(call: Call<ResponseKategoriSampah>, t: Throwable) {
-                utility.hideLoading()
+            } else {
                 utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    getKategoriSampah()
-                }, 5000)
             }
-
-        })
+        } catch (e: IOException) {
+            utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
+            Log.d("hehe", e.toString())
+        }
     }
 
     private fun setupUser() {
