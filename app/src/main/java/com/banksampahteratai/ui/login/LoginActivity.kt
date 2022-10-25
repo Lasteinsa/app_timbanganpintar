@@ -4,15 +4,9 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.Gravity
-import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility

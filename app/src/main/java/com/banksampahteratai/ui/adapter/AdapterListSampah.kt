@@ -3,10 +3,8 @@ package com.banksampahteratai.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.banksampahteratai.data.model.SampahModel
 import com.banksampahteratai.data.model.SampahShow
 import com.banksampahteratai.data.model.TransaksiData
-import com.banksampahteratai.data.model.TransaksiModel
 import com.banksampahteratai.databinding.AdapterListSampahBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah.ViewHolder
 

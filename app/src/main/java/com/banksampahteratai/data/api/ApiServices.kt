@@ -1,6 +1,5 @@
 package com.banksampahteratai.data.api
 
-import com.banksampahteratai.data.model.TransaksiData
 import com.banksampahteratai.data.model.TransaksiModel
 import retrofit2.Call
 import retrofit2.http.*

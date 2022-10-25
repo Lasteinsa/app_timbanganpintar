@@ -11,8 +11,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -33,14 +31,12 @@ import com.banksampahteratai.data.api.ResponseTransaksi
 import com.banksampahteratai.data.model.*
 import com.banksampahteratai.databinding.ActivityScaleBinding
 import com.banksampahteratai.ui.adapter.AdapterListSampah
-import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -108,7 +104,6 @@ class ScaleActivity : AppCompatActivity() {
             }
         } catch (e: IOException) {
             utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
-            Log.d("hihi", e.toString())
         }
     }
 
@@ -126,7 +121,6 @@ class ScaleActivity : AppCompatActivity() {
             }
         } catch (e: IOException) {
             utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
-            Log.d("hehe", e.toString())
         }
     }
 
