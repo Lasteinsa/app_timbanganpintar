@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
+import com.banksampahteratai.data.Const.Companion.ERROR_GET_LIST_SAMPAH
 import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
 import com.banksampahteratai.data.Const.Companion.LIST_HARGA_SAMPAH
 import com.banksampahteratai.data.Const.Companion.SAMPAH
@@ -75,10 +76,10 @@ class ScaleActivity : AppCompatActivity() {
         setupUser()
         setupList()
         setupAction()
-        setupListHargaSampah()
+        setupGetListSampah()
     }
 
-    private fun setupListHargaSampah() {
+    private fun setupGetListSampah() {
         utility.showLoading(this@ScaleActivity, false)
         executor.execute {
             getListHargaSampah()
@@ -100,10 +101,10 @@ class ScaleActivity : AppCompatActivity() {
                     listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                 }
             } else {
-                utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
+                errorSoWeMoveBack()
             }
         } catch (e: IOException) {
-            utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan list Harga. Mencoba Kembali...",true)
+            errorSoWeMoveBack()
         }
     }
 
@@ -117,10 +118,10 @@ class ScaleActivity : AppCompatActivity() {
                     listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                 }
             } else {
-                utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
+                errorSoWeMoveBack()
             }
         } catch (e: IOException) {
-            utility.showSnackbar(this@ScaleActivity,binding.root,"Kesalahan mendapatkan Kategori Sampah. Mencoba Kembali...",true)
+            errorSoWeMoveBack()
         }
     }
 
@@ -256,6 +257,12 @@ class ScaleActivity : AppCompatActivity() {
         intent.putParcelableArrayListExtra(LIST_HARGA_SAMPAH, listHargaSampah)
         intent.putParcelableArrayListExtra(KATEGORI_SAMPAH, listKategoriSampah)
         resultLauncher.launch(intent)
+    }
+
+    private fun errorSoWeMoveBack() {
+        val errorSoWeMoveBack = Intent(this@ScaleActivity, MainActivity::class.java)
+        setResult(ERROR_GET_LIST_SAMPAH,errorSoWeMoveBack)
+        finish()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

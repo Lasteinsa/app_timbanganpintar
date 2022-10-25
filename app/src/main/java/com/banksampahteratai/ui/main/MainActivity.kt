@@ -1,9 +1,14 @@
 package com.banksampahteratai.ui.main
 
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.R
+import com.banksampahteratai.data.Const
+import com.banksampahteratai.data.Const.Companion.ERROR_GET_LIST_SAMPAH
 import com.banksampahteratai.data.Const.Companion.USER
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
@@ -71,6 +76,12 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == ERROR_GET_LIST_SAMPAH) {
+            utility.showSnackbar(this, binding.root, "Gagal mendapatkan data. Coba Lagi", true)
+        }
+    }
+
     private fun searchUsers(p0: String?) {
         val retrofitInstance = ApiConfig.getApiService().getNasabah(preference.getToken.toString(), p0)
         retrofitInstance.enqueue(object: Callback<ResponseSearchUsers> {
@@ -88,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         val intent = Intent(this@MainActivity, ScaleActivity::class.java)
                         intent.putExtra(USER, data)
-                        startActivity(intent)
+                        resultLauncher.launch(intent)
                     }
                 } else {
                     utility.hideLoading()
