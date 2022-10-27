@@ -59,6 +59,7 @@ class ScaleActivity : AppCompatActivity() {
     private var idNasabah: String? = ""
     private var harga: Double = 0.0
     private var total: Double = 0.0
+    private var isErrorGetSampah = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +87,9 @@ class ScaleActivity : AppCompatActivity() {
             getKategoriSampah()
 
             handler.post {
-                utility.hideLoading()
+                if(!isErrorGetSampah) {
+                    utility.hideLoading()
+                }
             }
         }
     }
@@ -100,6 +103,7 @@ class ScaleActivity : AppCompatActivity() {
                 response.body()?.data?.forEach {
                     listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
                 }
+                isErrorGetSampah = false
             } else {
                 errorSoWeMoveBack()
             }
@@ -117,6 +121,7 @@ class ScaleActivity : AppCompatActivity() {
                 response.body()?.data?.forEach {
                     listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
                 }
+                isErrorGetSampah = false
             } else {
                 errorSoWeMoveBack()
             }
