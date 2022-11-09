@@ -115,15 +115,13 @@ class Utility {
         AlertDialog.Builder(context).apply {
             setTitle(titleDialog)
             setMessage(messageDialog)
-            setCancelable(false)
+            setCancelable(cancelable)
             setPositiveButton(confirmMessage, DialogInterface.OnClickListener { _, _ ->
                 doFunc()
             })
-            if(cancelable) {
-                setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
-                    dialog.dismiss()
-                })
-            }
+            setNegativeButton(cancelMessage, DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+            })
             create()
             show()
         }

@@ -203,7 +203,7 @@ class ScaleActivity : AppCompatActivity() {
                     if(response.isSuccessful) {
                         utility.showDialog(this@ScaleActivity,getString(R.string.success), response.body()?.messages.toString(), getString(R.string.OK), "", false, ::finish)
                     } else {
-                        utility.showDialog(this@ScaleActivity, getString(R.string.error), response.message(), getString(R.string.OK), "", false, ::submitSampah)
+                        utility.showDialog(this@ScaleActivity, getString(R.string.error), response.message(), getString(R.string.OK), "Cancel", false, ::submitSampah)
                     }
                 }
 

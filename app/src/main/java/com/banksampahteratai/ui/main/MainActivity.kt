@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
 
         })
         binding.fabRefresh.setOnClickListener {
+            utility.showLoading(this@MainActivity, false)
             mainViewModel.deleteAllNasabah()
             getAllNasabah()
         }
@@ -118,9 +119,11 @@ class MainActivity : AppCompatActivity() {
                         mainViewModel.insert(nasabah)
                     }
                 }
+                utility.hideLoading()
             }
 
             override fun onFailure(call: Call<ResponseSearchUsers>, t: Throwable) {
+                utility.hideLoading()
                 utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.no_internet), true)
             }
         })
