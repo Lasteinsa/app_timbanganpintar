@@ -53,13 +53,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inp_jumlah"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:hint="@string/satuan"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_edit_berat"
         app:layout_constraintStart_toStartOf="@+id/tv_jenis_sampah"
         app:layout_constraintTop_toBottomOf="@+id/jenis_sampah"
         app:startIconDrawable="@drawable/scale">
@@ -67,14 +66,15 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/input_jumlah"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:layout_height="match_parent"
             android:enabled="false"
+            android:inputType="numberDecimal"
             tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -111,15 +111,15 @@
             app:layout_constraintGuide_percent="0.5" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_edit_berat"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/btn_login_rounded"
-        android:text="@string/edit"
-        app:layout_constraintEnd_toEndOf="@+id/inp_jumlah"
-        app:layout_constraintStart_toStartOf="@+id/inp_jumlah"
-        app:layout_constraintTop_toBottomOf="@+id/inp_jumlah" />
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Edit"
+        app:icon="@drawable/ic_baseline_edit_24"
+        app:layout_constraintBottom_toBottomOf="@+id/inp_jumlah"
+        app:layout_constraintEnd_toEndOf="@+id/jenis_sampah"
+        app:layout_constraintTop_toTopOf="@+id/inp_jumlah"
+        app:rippleColor="@color/teratai_main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
