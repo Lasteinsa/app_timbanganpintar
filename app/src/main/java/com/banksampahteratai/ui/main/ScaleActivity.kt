@@ -54,7 +54,6 @@ class ScaleActivity : AppCompatActivity() {
     private val listKategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private val sampah: ArrayList<SampahShow> = ArrayList()
     private val dataTransaksi: ArrayList<TransaksiData> = ArrayList()
-    private val user: ArrayList<User> = ArrayList()
     private var nameNasabah: String = ""
     private var idNasabah: String? = ""
     private var harga: Double = 0.0
@@ -131,15 +130,9 @@ class ScaleActivity : AppCompatActivity() {
     }
 
     private fun setupUser() {
-        val userData = intent.extras?.getParcelableArrayList<User>(USER)
-        userData?.forEach { dataUser ->
-            user.add(User(dataUser.id, dataUser.namaLengkap))
-            idNasabah   = dataUser.id
-            nameNasabah = dataUser.namaLengkap.toString()
-                .split(' ').joinToString(" ") { char ->
-                    char.replaceFirstChar { it.uppercase() }
-                }
-        }
+        val userData = intent.getParcelableExtra<User>(USER) as User
+        idNasabah   = userData.id
+        nameNasabah = userData.namaLengkap.toString()
 
         binding.idNasabah.text      = idNasabah
         binding.namaNasabah.text    = nameNasabah

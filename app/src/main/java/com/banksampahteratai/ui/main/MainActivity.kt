@@ -82,15 +82,16 @@ class MainActivity : AppCompatActivity() {
         }
         binding.searchUser.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                utility.showLoading(this@MainActivity,false)
-                searchUsers(p0)
-                binding.searchUser.clearFocus()
+                if (p0 != null) {
+                    searchFromDb(p0)
+                    binding.searchUser.clearFocus()
+                }
                 return false
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
                 if(p0 != null) {
-                    searchfromdb(p0)
+                    searchFromDb(p0)
                 }
                 return false
             }
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchfromdb(query: String) {
+    private fun searchFromDb(query: String) {
         val searchQuery = "%$query%"
         mainViewModel.search(searchQuery).observe(this, {
             it.let { nasabahList ->
