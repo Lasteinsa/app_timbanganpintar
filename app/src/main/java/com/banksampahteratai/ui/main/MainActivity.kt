@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.banksampahteratai.R
 import com.banksampahteratai.data.Const
 import com.banksampahteratai.data.Const.Companion.ERROR_GET_LIST_SAMPAH
@@ -15,6 +17,7 @@ import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseSearchUsers
+import com.banksampahteratai.data.database.Nasabah
 import com.banksampahteratai.data.model.User
 import com.banksampahteratai.databinding.ActivityMainBinding
 import com.banksampahteratai.ui.ViewModelFactory
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var preference: DataPreference
     private lateinit var nasabahAdapter: AdapterNasabah
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var utility: Utility
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +42,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         preference      = DataPreference(this)
-        nasabahAdapter = AdapterNasabah()
 
-        val mainViewModel = obtainViewModel(this@MainActivity)
+        mainViewModel = obtainViewModel(this@MainActivity)
         mainViewModel.getAllNasabah().observe(this, { nasabahList ->
             if (nasabahList != null) {
                 nasabahAdapter.setListNasabah(nasabahList)
             }
         })
+
+        nasabahAdapter = AdapterNasabah()
+        binding.rvNasabah.layoutManager = LinearLayoutManager(this)
+        binding.rvNasabah.adapter = nasabahAdapter
+
         supportActionBar?.hide()
 
         utility = Utility()
@@ -62,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        Glide.with(this).load(getDrawable(R.drawable.main)).centerCrop().into(binding.mainBackground)
+//        Glide.with(this).load(getDrawable(R.drawable.main)).centerCrop().into(binding.mainBackground)
 
         setupAction()
     }
@@ -85,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         })
         binding.fabRefresh.setOnClickListener {
-
+            getAllNasabah()
         }
     }
 
@@ -129,6 +137,32 @@ class MainActivity : AppCompatActivity() {
                 utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.no_internet), true)
             }
 
+        })
+    }
+
+    private fun getAllNasabah() {
+        val retrofitInstance = ApiConfig.getApiService().getAllNasabah(preference.getToken.toString())
+        retrofitInstance.enqueue(object: Callback<ResponseSearchUsers> {
+            override fun onResponse(
+                call: Call<ResponseSearchUsers>,
+                response: Response<ResponseSearchUsers>
+            ) {
+                if(response.isSuccessful) {
+                    val res = response.body()
+                    res?.data?.forEach {
+                        val nasabah = Nasabah()
+                        nasabah.let { nasabah ->  
+                            nasabah.idNasabah   = it?.id!!.toInt()
+                            nasabah.name        = it.namaLengkap
+                        }
+                        mainViewModel.insert(nasabah)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseSearchUsers>, t: Throwable) {
+                utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.no_internet), true)
+            }
         })
     }
 

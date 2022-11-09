@@ -31,6 +31,11 @@ interface ApiServices {
         @Query ("key") username: String?
     ): Call<ResponseSearchUsers>
 
+    @GET("admin/getnasabah")
+    fun getAllNasabah(
+        @Header("token") token: String
+    ): Call <ResponseSearchUsers>
+
 //    @Multipart
     @POST("transaksi/setorsampahapk")
     fun setorSampah(
