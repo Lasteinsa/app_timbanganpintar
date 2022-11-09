@@ -24,10 +24,12 @@ class DataPreference(context: Context) {
 
     val getToken    = prefs.getString(TOKEN, "")
     val isLogin     = prefs.getBoolean(STATE_KEY, false)
+    val firstTime   = prefs.getBoolean(FIRST_TIME, true)
 
     companion object {
         const val PREFERENCE    = "settings"
         const val TOKEN         = "token"
         const val STATE_KEY     = "state"
+        const val FIRST_TIME    = "first"
     }
 }

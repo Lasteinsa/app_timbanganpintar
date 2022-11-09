@@ -175,12 +175,16 @@ class ScaleActivity : AppCompatActivity() {
             )
         }
         binding.btnSubmit.setOnClickListener {
-            utility.showDialog(
-                this,
-                getString(R.string.want_submit), getString(R.string.data_will_be_send),
-                getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
-                ::submitSampah
-            )
+            if(dataTransaksi.isEmpty()) {
+                utility.showSnackbar(this@ScaleActivity, binding.root, "Tambahkan Setidaknya Input Transaksi", true)
+            } else {
+                utility.showDialog(
+                    this,
+                    getString(R.string.want_submit), getString(R.string.data_will_be_send),
+                    getString(R.string.confirm_yes), getString(R.string.confirm_no), true,
+                    ::submitSampah
+                )
+            }
         }
     }
 

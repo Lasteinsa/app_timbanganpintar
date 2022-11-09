@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
+import com.banksampahteratai.data.DataPreference.Companion.FIRST_TIME
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseSearchUsers
@@ -59,6 +60,13 @@ class MainActivity : AppCompatActivity() {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             }
             startActivity(intent)
+        }
+
+        if(preference.firstTime && preference.isLogin) {
+            utility.showLoading(this@MainActivity, false)
+            mainViewModel.deleteAllNasabah()
+            getAllNasabah()
+            preference.setPreferenceBoolean(FIRST_TIME, false)
         }
 
         setupAction()
