@@ -74,6 +74,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+        binding.fabRefresh.setOnClickListener {
+
+        }
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
