@@ -113,8 +113,8 @@ class MainActivity : AppCompatActivity() {
                     res?.data?.forEach {
                         val nasabah = Nasabah()
                         nasabah.let { nasabah ->  
-                            nasabah.idNasabah   = it?.id!!.toInt()
-                            nasabah.name        = it.namaLengkap
+                            nasabah.idNasabah   = it?.id
+                            nasabah.name        = it?.namaLengkap
                         }
                         mainViewModel.insert(nasabah)
                     }

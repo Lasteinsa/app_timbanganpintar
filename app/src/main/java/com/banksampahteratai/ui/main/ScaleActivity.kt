@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,7 +54,7 @@ class ScaleActivity : AppCompatActivity() {
     private val sampah: ArrayList<SampahShow> = ArrayList()
     private val dataTransaksi: ArrayList<TransaksiData> = ArrayList()
     private var nameNasabah: String = ""
-    private var idNasabah: String? = ""
+    private var idNasabah: String = ""
     private var harga: Double = 0.0
     private var total: Double = 0.0
     private var isErrorGetSampah = true
@@ -131,7 +130,7 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupUser() {
         val userData = intent.getParcelableExtra<User>(USER) as User
-        idNasabah   = userData.id
+        idNasabah   = userData.id.toString()
         nameNasabah = userData.namaLengkap.toString()
 
         binding.idNasabah.text      = idNasabah

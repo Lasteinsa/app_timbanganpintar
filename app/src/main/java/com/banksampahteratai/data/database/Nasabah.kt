@@ -14,7 +14,7 @@ data class Nasabah(
     var id: Int = 0,
 
     @ColumnInfo(name = "idNasabah")
-    var idNasabah: Int = 0,
+    var idNasabah: String? = null,
 
     @ColumnInfo(name = "name")
     var name: String? = null,
