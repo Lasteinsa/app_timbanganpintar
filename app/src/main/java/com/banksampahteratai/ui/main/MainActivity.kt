@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Query
 import com.banksampahteratai.R
 import com.banksampahteratai.data.Const
 import com.banksampahteratai.data.Const.Companion.ERROR_GET_LIST_SAMPAH
@@ -88,13 +89,26 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
+                if(p0 != null) {
+                    searchfromdb(p0)
+                }
                 return false
             }
 
         })
         binding.fabRefresh.setOnClickListener {
+            mainViewModel.deleteAllNasabah()
             getAllNasabah()
         }
+    }
+
+    private fun searchfromdb(query: String) {
+        val searchQuery = "%$query%"
+        mainViewModel.search(searchQuery).observe(this, {
+            it.let { nasabahList ->
+                nasabahAdapter.setListNasabah(nasabahList)
+            }
+        })
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

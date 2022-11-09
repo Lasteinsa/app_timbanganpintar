@@ -18,6 +18,12 @@ class NasabahRepository(application: Application) {
     }
 
     fun getAllNasabah(): LiveData<List<Nasabah>> = mNasabahDao.getAllNasabah()
+    fun deleteAllNasabah() {
+        executorService.execute {  mNasabahDao.deleteAll() }
+    }
+    fun searchNasabah(query: String): LiveData<List<Nasabah>> {
+        return mNasabahDao.search(query)
+    }
 
     fun insert(nasabah: Nasabah) {
         executorService.execute { mNasabahDao.insert(nasabah) }
