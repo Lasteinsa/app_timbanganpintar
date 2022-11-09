@@ -8,7 +8,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.banksampahteratai.R
 import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
@@ -98,8 +97,6 @@ class AddListenerActivity : AppCompatActivity() {
     private fun setupAction() {
         binding.submitIt.setOnClickListener {
             val intent = Intent(this@AddListenerActivity, ScaleActivity::class.java)
-
-//            binding.inputJumlah.setText(9.9.toString())
 
             namaJenis = binding.jenisSampah.selectedItem.toString()
 
