@@ -1,5 +1,6 @@
 package com.banksampahteratai.data.api
 
+import com.banksampahteratai.BuildConfig
 import com.banksampahteratai.data.model.TransaksiModel
 import retrofit2.Call
 import retrofit2.http.*
@@ -57,8 +58,11 @@ interface ApiServices {
 class ApiConfig {
     companion object {
         fun getApiService(): ApiServices {
-            val loggingInterceptor =
+            val loggingInterceptor = if(BuildConfig.DEBUG) {
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            } else {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+            }
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()
