@@ -25,9 +25,7 @@ class AddListenerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddListenerBinding
     private lateinit var arrayAdapter: ArrayAdapter<String>
     private lateinit var utility: Utility
-
     private lateinit var bounceAnim: Animation
-
     private var listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private var kategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private var sampah: ArrayList<TransaksiData> = ArrayList()
@@ -96,6 +94,7 @@ class AddListenerActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.submitIt.setOnClickListener {
+            it.startAnimation(bounceAnim)
             val intent = Intent(this@AddListenerActivity, ScaleActivity::class.java)
 
             namaJenis = binding.jenisSampah.selectedItem.toString()
@@ -121,11 +120,12 @@ class AddListenerActivity : AppCompatActivity() {
             finish()
         }
         binding.btnEditBerat.setOnClickListener {
-            binding.btnEditBerat.startAnimation(bounceAnim)
+            it.startAnimation(bounceAnim)
             val isBeratEnabled = binding.inputJumlah.isEnabled
             binding.inputJumlah.isEnabled = !isBeratEnabled
         }
         binding.cancelIt.setOnClickListener {
+            it.startAnimation(bounceAnim)
             finish()
         }
     }

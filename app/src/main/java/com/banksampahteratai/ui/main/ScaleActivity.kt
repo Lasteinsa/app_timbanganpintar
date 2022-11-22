@@ -10,6 +10,8 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +50,7 @@ class ScaleActivity : AppCompatActivity() {
     private lateinit var adapterList: RecyclerView
     private lateinit var preference: DataPreference
     private lateinit var submitData: TransaksiModel
+    private lateinit var bounceAnim: Animation
     private val handler = Handler(Looper.getMainLooper())
     private val listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private val listKategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
@@ -76,6 +79,11 @@ class ScaleActivity : AppCompatActivity() {
         setupList()
         setupAction()
         setupGetListSampah()
+        setupAnimation()
+    }
+
+    private fun setupAnimation() {
+        bounceAnim = AnimationUtils.loadAnimation(this, R.anim.bounce)
     }
 
     private fun setupGetListSampah() {
@@ -134,7 +142,8 @@ class ScaleActivity : AppCompatActivity() {
         nameNasabah = userData.namaLengkap.toString()
 
         binding.idNasabah.text      = idNasabah
-        binding.namaNasabah.text    = nameNasabah
+        binding.namaNasabah.text    =
+            nameNasabah.split(" ").joinToString(" ") { it.replaceFirstChar { word -> word.uppercase() } }
     }
 
     private fun setupList() {
@@ -167,6 +176,7 @@ class ScaleActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.btnCancel.setOnClickListener {
+            it.startAnimation(bounceAnim)
             utility.showDialog(
                 this@ScaleActivity,
                 getString(R.string.sure_to_delete), getString(R.string.data_will_be_lost),
@@ -175,6 +185,7 @@ class ScaleActivity : AppCompatActivity() {
             )
         }
         binding.btnSubmit.setOnClickListener {
+            it.startAnimation(bounceAnim)
             if(dataTransaksi.isEmpty()) {
                 utility.showSnackbar(this@ScaleActivity, binding.root, "Tambahkan Setidaknya Input Transaksi", true)
             } else {

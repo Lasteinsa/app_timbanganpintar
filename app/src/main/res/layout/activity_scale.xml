@@ -32,11 +32,13 @@
 
             <TextView
                 android:id="@+id/nama_nasabah"
-                android:layout_width="297dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:padding="8dp"
                 android:text="@string/nama_nasabah"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
         </TableRow>
 
