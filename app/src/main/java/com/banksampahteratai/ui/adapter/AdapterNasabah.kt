@@ -45,7 +45,7 @@ class AdapterNasabah : RecyclerView.Adapter<AdapterNasabah.NasabahViewHolder>() 
                 onItemClickCallBack!!.onItemClicked(nasabah)
             }
             with(binding) {
-                nasabahName.text = nasabah.name
+                nasabahName.text = nasabah.name?.split(" ")?.joinToString(" ") { it.replaceFirstChar { word -> word.uppercase() } }
 
                 itemView.setOnClickListener {
                     val data = User(nasabah.idNasabah.toString(), nasabah.name)
