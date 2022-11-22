@@ -124,6 +124,11 @@ class AddListenerActivity : AppCompatActivity() {
             val isBeratEnabled = binding.inputJumlah.isEnabled
             binding.inputJumlah.isEnabled = !isBeratEnabled
         }
+        binding.btListen.setOnClickListener {
+            it.startAnimation(bounceAnim)
+
+        }
+
         binding.cancelIt.setOnClickListener {
             it.startAnimation(bounceAnim)
             finish()
