@@ -262,7 +262,7 @@ class ScaleActivity : AppCompatActivity() {
             }
             setupRecycleSampah(sampahShow, sampahData)
         } else if(result.resultCode == Activity.RESULT_CANCELED) {
-            utility.showSnackbar(this@ScaleActivity, binding.root, "Failed to Init Bluetooth", true)
+            utility.showSnackbar(this@ScaleActivity, binding.root, "Canceled", false)
         }
     }
 

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -19,9 +18,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isInvisible
 import com.banksampahteratai.R
 import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
 import com.banksampahteratai.data.Const.Companion.LIST_HARGA_SAMPAH
@@ -54,6 +53,7 @@ class AddListenerActivity : AppCompatActivity() {
     private var sampahShow: ArrayList<SampahShow> = ArrayList()
     private var namaJenis: String = ""
     private var beratSampah: Double = 5.050
+    private var isBtConnected: Boolean = false
     val listKategori = mutableListOf<String?>()
     val listJenis    = mutableListOf<String>()
 
@@ -73,8 +73,11 @@ class AddListenerActivity : AppCompatActivity() {
         setupAnimation()
         setupKategori()
         setupAction()
-        binding.loadingBt.alpha = 1F
-        binding.btListenText.alpha = 0F
+
+        binding.loadingBt.isInvisible       = false
+        binding.btListenText.isInvisible    = true
+        binding.btReconnectBtn.isInvisible  = true
+
         executor.execute {
             bluetoothListen()
         }
@@ -151,19 +154,22 @@ class AddListenerActivity : AppCompatActivity() {
             }
             btSocket = hc.createInsecureRfcommSocketToServiceRecord(myUUID)
             btSocket.connect();
-            mConnectedThread = ConnectedThread(btSocket, binding.btListenText)
+            mConnectedThread = ConnectedThread(btSocket, binding.inputJumlah, binding.btListenText)
             mConnectedThread.start()
+            isBtConnected = true
             handler.post {
-                binding.loadingBt.alpha = 0F
-                binding.btListenText.alpha = 1F
+                utility.showSnackbar(this@AddListenerActivity,binding.root,"Bluetooth Paired",false,true)
+                binding.loadingBt.isInvisible       = true
+                binding.btListenText.isInvisible    = false
             }
         }
         catch (e: IOException) {
-            utility.showSnackbar(this, binding.root, "Failed to init Bluetooth", true)
-            closeTheBt()
-            val intent = Intent(this@AddListenerActivity, ScaleActivity::class.java)
-            setResult(Activity.RESULT_CANCELED,intent)
-            finish()
+            utility.showSnackbar(this, binding.root, "Failed to init Bluetooth. Please enable", true)
+            handler.post {
+                binding.loadingBt.isInvisible       = true
+                binding.btListenText.isInvisible    = true
+                binding.btReconnectBtn.isInvisible  = false
+            }
         }
     }
 
@@ -174,7 +180,11 @@ class AddListenerActivity : AppCompatActivity() {
 
             namaJenis = binding.jenisSampah.selectedItem.toString()
 
-            beratSampah = binding.inputJumlah.text.toString().toDouble()
+            beratSampah = if(isBtConnected) {
+                String.format("%.2f",binding.inputJumlah.text.toString().toFloat() / 1000).toDouble()
+            } else {
+                binding.inputJumlah.text.toString().toDouble()
+            }
 
             closeTheBt()
 
@@ -201,11 +211,14 @@ class AddListenerActivity : AppCompatActivity() {
             val isBeratEnabled = binding.inputJumlah.isEnabled
             binding.inputJumlah.isEnabled = !isBeratEnabled
         }
-        binding.btListen.setOnClickListener {
-            it.startAnimation(bounceAnim)
-            binding.inputJumlah.setText(binding.btListenText.text)
+        binding.btReconnectBtn.setOnClickListener {
+            binding.loadingBt.isInvisible       = false
+            binding.btListenText.isInvisible    = true
+            binding.btReconnectBtn.isInvisible  = true
+            executor.execute {
+                bluetoothListen()
+            }
         }
-
         binding.cancelIt.setOnClickListener {
             it.startAnimation(bounceAnim)
             closeTheBt()
@@ -221,10 +234,11 @@ class AddListenerActivity : AppCompatActivity() {
     }
 }
 
-private class ConnectedThread(socket: BluetoothSocket, view: TextView) : Thread() {
+private class ConnectedThread(socket: BluetoothSocket, view: TextView, viewText: TextView) : Thread() {
     private val mmInStream: InputStream?
     private var executor: ExecutorService
     private var textView: TextView
+    private var greatOne: TextView
     private val handler = Handler(Looper.getMainLooper())
     init {
         var tmpIn: InputStream? = null
@@ -236,20 +250,23 @@ private class ConnectedThread(socket: BluetoothSocket, view: TextView) : Thread(
         }
         mmInStream = tmpIn
         textView = view
+        greatOne = viewText
     }
     override fun run() {
         executor.execute {
             val buffer = ByteArray(256)
             var bytes: Int
 
-            // Keep the damn looping
+//             Keep the damn looping
             while (true) {
                 try {
                     bytes = mmInStream!!.read(buffer)
                     val readMessage = String(buffer, 0, bytes)
-                    Log.d("output", readMessage)
                     handler.post {
-                        textView.text = readMessage
+                        if(readMessage.toFloat() > 0) {
+                            textView.text = readMessage
+                            greatOne.text = readMessage+" gram"
+                        }
                     }
 
                 } catch (e: IOException) {

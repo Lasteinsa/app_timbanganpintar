@@ -127,17 +127,20 @@ class Utility {
         }
     }
 
-    fun showSnackbar(context: Context, view: View, text: String, isDanger: Boolean) {
+    fun showSnackbar(context: Context, view: View, text: String, isDanger: Boolean, isSuccess: Boolean = false) {
         val snackbar: Snackbar  = Snackbar.make(view, text, Snackbar.LENGTH_LONG)
         val view                = snackbar.view
         val params              = view.layoutParams as FrameLayout.LayoutParams
         params.gravity          = Gravity.TOP
         view.layoutParams       = params
         snackbar.setTextColor(context.getColor(R.color.white))
-        if(isDanger) {
+        if(isDanger && !isSuccess) {
             snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_danger, null)
-        } else {
+        } else if (!isDanger && !isSuccess) {
             snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_warning, null)
+        }
+        if(isSuccess) {
+            snackbar.view.background    = ResourcesCompat.getDrawable(context.resources, R.drawable.alert_success, null)
         }
         snackbar.show()
     }

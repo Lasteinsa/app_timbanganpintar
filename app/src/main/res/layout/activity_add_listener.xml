@@ -114,16 +114,20 @@
     <TextView
         android:id="@+id/bt_listen_text"
         android:layout_width="match_parent"
-        android:layout_height="38dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="Satuan"
-        android:textSize="28sp"
+        android:textSize="60sp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inp_jumlah" />
+        app:layout_constraintTop_toBottomOf="@+id/inp_jumlah"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ProgressBar
         android:id="@+id/loading_bt"
@@ -139,23 +143,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_edit_24"
-        android:tint="@color/white"
-        app:backgroundTint="@color/teratai_main"
+        android:backgroundTint="@color/teratai_main"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/inp_jumlah"
         app:layout_constraintEnd_toEndOf="@+id/jenis_sampah"
         app:layout_constraintTop_toTopOf="@+id/inp_jumlah"
         app:rippleColor="@color/teratai_branch_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/bt_listen"
+        android:id="@+id/bt_reconnect_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_baseline_add_circle_24"
-        android:tint="@color/teratai_main"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+        android:layout_margin="16dp"
+        android:foregroundGravity="bottom"
+        android:src="@drawable/ic_baseline_refresh_24"
+        android:backgroundTint="@color/teratai_main"
+        app:tint="@color/white"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_listen_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/teratai_branch_main" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inp_jumlah"
+        app:rippleColor="@color/teratai_main" />
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/bt_listen"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:src="@drawable/ic_baseline_add_circle_24"-->
+<!--        android:tint="@color/teratai_main"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:rippleColor="@color/teratai_branch_main" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
