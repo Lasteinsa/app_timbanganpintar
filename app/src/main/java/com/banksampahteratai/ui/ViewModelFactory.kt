@@ -1,12 +1,12 @@
 package com.banksampahteratai.ui
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.ui.login.LoginViewModel
 import com.banksampahteratai.ui.main.MainViewModel
+import com.banksampahteratai.ui.main.ScaleViewModel
 
 class ViewModelFactory private constructor(private val mApplication: Application, private val preference: DataPreference) : ViewModelProvider.NewInstanceFactory() {
 
@@ -32,6 +32,9 @@ class ViewModelFactory private constructor(private val mApplication: Application
             }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(preference) as T
+            }
+            modelClass.isAssignableFrom(ScaleViewModel::class.java) -> {
+                ScaleViewModel(mApplication, preference) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

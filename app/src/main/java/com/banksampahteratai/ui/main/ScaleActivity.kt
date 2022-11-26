@@ -6,8 +6,6 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.Animation
@@ -16,9 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
-import com.banksampahteratai.data.Const.Companion.ERROR_GET_LIST_SAMPAH
 import com.banksampahteratai.data.Const.Companion.KATEGORI_SAMPAH
 import com.banksampahteratai.data.Const.Companion.LIST_HARGA_SAMPAH
 import com.banksampahteratai.data.Const.Companion.SAMPAH
@@ -27,16 +25,14 @@ import com.banksampahteratai.data.Const.Companion.USER
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
-import com.banksampahteratai.data.api.ResponseDataSampah
-import com.banksampahteratai.data.api.ResponseKategoriSampah
 import com.banksampahteratai.data.api.ResponseTransaksi
 import com.banksampahteratai.data.model.*
 import com.banksampahteratai.databinding.ActivityScaleBinding
+import com.banksampahteratai.ui.ViewModelFactory
 import com.banksampahteratai.ui.adapter.AdapterListSampah
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ExecutorService
@@ -51,7 +47,7 @@ class ScaleActivity : AppCompatActivity() {
     private lateinit var preference: DataPreference
     private lateinit var submitData: TransaksiModel
     private lateinit var bounceAnim: Animation
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var scaleViewModel: ScaleViewModel
     private val listHargaSampah: ArrayList<SampahModel> = ArrayList()
     private val listKategoriSampah: ArrayList<KategoriSampahModel> = ArrayList()
     private val sampah: ArrayList<SampahShow> = ArrayList()
@@ -60,7 +56,6 @@ class ScaleActivity : AppCompatActivity() {
     private var idNasabah: String = ""
     private var harga: Double = 0.0
     private var total: Double = 0.0
-    private var isErrorGetSampah = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,71 +64,53 @@ class ScaleActivity : AppCompatActivity() {
 
         preference  = DataPreference(this)
         utility     = Utility()
+
+        scaleViewModel = obtainViewModel(this@ScaleActivity)
+
         supportActionBar?.title = "Nasabah"
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this,R.color.teratai_main)))
 
         executor = Executors.newSingleThreadExecutor()
 
+        setSampahAndKategori()
         resetHarga()
         setupUser()
         setupList()
         setupAction()
-        setupGetListSampah()
         setupAnimation()
+    }
+
+    private fun setSampahAndKategori() {
+        scaleViewModel.getAllDataSampah().observe(this) { sampahList ->
+            sampahList?.forEach { dataSampah ->
+                listHargaSampah.add(
+                    SampahModel(
+                        dataSampah.id.toString(),
+                        dataSampah.idKategori,
+                        dataSampah.kategori,
+                        dataSampah.jenisSampah,
+                        dataSampah.hargaSampah,
+                        dataSampah.hargaPusat,
+                        dataSampah.jumlahSampah.toString().toDouble()
+                    )
+                )
+            }
+        }
+        scaleViewModel.getAllKategoriSampah().observe(this) { kategoriList ->
+            kategoriList?.forEach { dataKategori ->
+                listKategoriSampah.add(
+                    KategoriSampahModel(
+                        dataKategori.idKategori,
+                        dataKategori.name,
+                        dataKategori.created_at
+                    )
+                )
+            }
+        }
     }
 
     private fun setupAnimation() {
         bounceAnim = AnimationUtils.loadAnimation(this, R.anim.bounce)
-    }
-
-    private fun setupGetListSampah() {
-        utility.showLoading(this@ScaleActivity, false)
-        executor.execute {
-            getListHargaSampah()
-            getKategoriSampah()
-
-            handler.post {
-                if(!isErrorGetSampah) {
-                    utility.hideLoading()
-                }
-            }
-        }
-    }
-
-    private fun getListHargaSampah() {
-        val retrofitInstanceGetListHargaSampah = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
-
-        try {
-            val response: Response<ResponseDataSampah> = retrofitInstanceGetListHargaSampah.execute()
-            if(response.isSuccessful) {
-                response.body()?.data?.forEach {
-                    listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
-                }
-                isErrorGetSampah = false
-            } else {
-                errorSoWeMoveBack()
-            }
-        } catch (e: IOException) {
-            errorSoWeMoveBack()
-        }
-    }
-
-    private fun getKategoriSampah() {
-        val retrofitInstanceGetKategoriSampah = ApiConfig.getApiService().getKategoriSampah()
-
-        try {
-            val response: Response<ResponseKategoriSampah> = retrofitInstanceGetKategoriSampah.execute()
-            if(response.isSuccessful) {
-                response.body()?.data?.forEach {
-                    listKategoriSampah.add(KategoriSampahModel(it?.id, it?.name, it?.created_at))
-                }
-                isErrorGetSampah = false
-            } else {
-                errorSoWeMoveBack()
-            }
-        } catch (e: IOException) {
-            errorSoWeMoveBack()
-        }
     }
 
     private fun setupUser() {
@@ -273,12 +250,6 @@ class ScaleActivity : AppCompatActivity() {
         resultLauncher.launch(intent)
     }
 
-    private fun errorSoWeMoveBack() {
-        val errorSoWeMoveBack = Intent(this@ScaleActivity, MainActivity::class.java)
-        setResult(ERROR_GET_LIST_SAMPAH,errorSoWeMoveBack)
-        finish()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_listener -> {
@@ -310,5 +281,10 @@ class ScaleActivity : AppCompatActivity() {
             create()
             show()
         }
+    }
+
+    private fun obtainViewModel(activity: AppCompatActivity): ScaleViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application, preference)
+        return ViewModelProvider(activity, factory)[ScaleViewModel::class.java]
     }
 }

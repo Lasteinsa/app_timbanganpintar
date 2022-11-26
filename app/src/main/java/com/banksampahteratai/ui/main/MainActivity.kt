@@ -10,7 +10,11 @@ import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.DataPreference.Companion.FIRST_TIME
 import com.banksampahteratai.data.Utility
 import com.banksampahteratai.data.api.ApiConfig
+import com.banksampahteratai.data.api.ResponseDataSampah
+import com.banksampahteratai.data.api.ResponseKategoriSampah
 import com.banksampahteratai.data.api.ResponseSearchUsers
+import com.banksampahteratai.data.database.DataSampah
+import com.banksampahteratai.data.database.KategoriSampah
 import com.banksampahteratai.data.database.Nasabah
 import com.banksampahteratai.databinding.ActivityMainBinding
 import com.banksampahteratai.ui.ViewModelFactory
@@ -36,11 +40,11 @@ class MainActivity : AppCompatActivity() {
         preference      = DataPreference(this)
 
         mainViewModel = obtainViewModel(this@MainActivity)
-        mainViewModel.getAllNasabah().observe(this, { nasabahList ->
+        mainViewModel.getAllNasabah().observe(this) { nasabahList ->
             if (nasabahList != null) {
                 nasabahAdapter.setListNasabah(nasabahList)
             }
-        })
+        }
 
         nasabahAdapter = AdapterNasabah()
         binding.rvNasabah.layoutManager = LinearLayoutManager(this)
@@ -96,17 +100,21 @@ class MainActivity : AppCompatActivity() {
         binding.fabRefresh.setOnClickListener {
             utility.showLoading(this@MainActivity, false)
             mainViewModel.deleteAllNasabah()
+            mainViewModel.deleteAllSampah()
+            mainViewModel.deleteAllKategoriSampah()
             getAllNasabah()
+            getAllDataSampah()
+            getAllKategoriSampah()
         }
     }
 
     private fun searchFromDb(query: String) {
         val searchQuery = "%$query%"
-        mainViewModel.search(searchQuery).observe(this, {
+        mainViewModel.searchNasabah(searchQuery).observe(this) {
             it.let { nasabahList ->
                 nasabahAdapter.setListNasabah(nasabahList)
             }
-        })
+        }
     }
 
     private fun getAllNasabah() {
@@ -124,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                             nasabah.idNasabah   = it?.id
                             nasabah.name        = it?.namaLengkap
                         }
-                        mainViewModel.insert(nasabah)
+                        mainViewModel.insertNasabah(nasabah)
                     }
                 }
                 utility.hideLoading()
@@ -134,6 +142,69 @@ class MainActivity : AppCompatActivity() {
                 utility.hideLoading()
                 utility.showSnackbar(this@MainActivity, binding.root, getString(R.string.no_internet), true)
             }
+        })
+    }
+
+    private fun getAllDataSampah() {
+        val retrofitInstance = ApiConfig.getApiService().getListHargaSampah(preference.getToken.toString())
+        retrofitInstance.enqueue(object : Callback<ResponseDataSampah> {
+            override fun onResponse(
+                call: Call<ResponseDataSampah>,
+                response: Response<ResponseDataSampah>
+            ) {
+                if(response.isSuccessful) {
+                    val res = response.body()
+                    res?.data?.forEach {
+                        mainViewModel.insertDataSampah(
+                            DataSampah(
+                                idKategori     = it?.idKategori.toString(),
+                                kategori       = it?.kategori.toString(),
+                                jenisSampah    = it?.jenis.toString(),
+                                jumlahSampah   = it?.jumlah.toString().toDouble(),
+                                hargaSampah    = it?.harga.toString().toInt(),
+                                hargaPusat     = it?.hargaPusat.toString().toInt(),
+                                totalHarga     = it?.jumlah.toString().toDouble()
+                            )
+                        )
+                    }
+                } else {
+                    utility.showSnackbar(this@MainActivity,binding.root, "Error Response", true)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseDataSampah>, t: Throwable) {
+                utility.showSnackbar(this@MainActivity,binding.root, "Error Response", true)
+            }
+
+        })
+    }
+
+    private fun getAllKategoriSampah() {
+        val retrofitInstance = ApiConfig.getApiService().getKategoriSampah()
+        retrofitInstance.enqueue(object : Callback<ResponseKategoriSampah> {
+            override fun onResponse(
+                call: Call<ResponseKategoriSampah>,
+                response: Response<ResponseKategoriSampah>
+            ) {
+                if(response.isSuccessful) {
+                    response.body()?.data?.forEach {
+                        mainViewModel.insertKategoriSampah(
+                            KategoriSampah(
+                                idKategori  = it?.id,
+                                name        = it?.name,
+                                created_at  = it?.created_at
+                            )
+                        )
+                    }
+                } else {
+                    utility.showSnackbar(this@MainActivity,binding.root, "Error Response", true)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseKategoriSampah>, t: Throwable) {
+                utility.showSnackbar(this@MainActivity,binding.root, "Error Response", true)
+            }
+
         })
     }
 

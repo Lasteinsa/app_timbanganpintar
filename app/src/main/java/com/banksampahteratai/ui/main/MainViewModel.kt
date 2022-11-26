@@ -1,32 +1,33 @@
 package com.banksampahteratai.ui.main
 
 import android.app.Application
-import android.text.Editable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.viewModelScope
 import com.banksampahteratai.data.DataPreference
+import com.banksampahteratai.data.database.DataSampah
+import com.banksampahteratai.data.database.KategoriSampah
 import com.banksampahteratai.data.database.Nasabah
-import com.banksampahteratai.data.repository.NasabahRepository
-import kotlinx.coroutines.launch
+import com.banksampahteratai.data.repository.SmartRepository
 
 class MainViewModel(application: Application, private val preference: DataPreference) : ViewModel() {
-    private val mNasabahRepository: NasabahRepository = NasabahRepository(application)
+    private val mSmartRepository: SmartRepository = SmartRepository(application)
 
-    fun getAllNasabah(): LiveData<List<Nasabah>> = mNasabahRepository.getAllNasabah()
-    fun deleteAllNasabah() = mNasabahRepository.deleteAllNasabah()
-    fun search(query: String): LiveData<List<Nasabah>> {
-        return mNasabahRepository.searchNasabah(query)
+    fun getAllNasabah(): LiveData<List<Nasabah>> = mSmartRepository.getAllNasabah()
+    fun deleteAllNasabah() = mSmartRepository.deleteAllNasabah()
+    fun searchNasabah(query: String): LiveData<List<Nasabah>> {
+        return mSmartRepository.searchNasabah(query)
+    }
+    fun insertNasabah(nasabah: Nasabah) {
+        mSmartRepository.insertNasabah(nasabah)
     }
 
-    fun insert(nasabah: Nasabah) {
-        mNasabahRepository.insert(nasabah)
+    fun deleteAllSampah() = mSmartRepository.deleteAllDataSampah()
+    fun insertDataSampah(dataSampah: DataSampah) {
+        mSmartRepository.insertDataSampah(dataSampah)
     }
-    fun update(nasabah: Nasabah) {
-        mNasabahRepository.update(nasabah)
-    }
-    fun delete(nasabah: Nasabah) {
-        mNasabahRepository.delete(nasabah)
+
+    fun deleteAllKategoriSampah() = mSmartRepository.deleteAllKategoriSampah()
+    fun insertKategoriSampah(kategoriSampah: KategoriSampah) {
+        mSmartRepository.inserKategoriSampah(kategoriSampah)
     }
 }
