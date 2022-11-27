@@ -3,6 +3,7 @@ package com.banksampahteratai.ui.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.banksampahteratai.R
@@ -43,6 +44,11 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.getAllNasabah().observe(this) { nasabahList ->
             if (nasabahList != null) {
                 nasabahAdapter.setListNasabah(nasabahList)
+            }
+            if(nasabahAdapter.itemCount == 0) {
+                isNasabahEmpty(true)
+            } else {
+                isNasabahEmpty(false)
             }
         }
 
@@ -106,6 +112,11 @@ class MainActivity : AppCompatActivity() {
             getAllDataSampah()
             getAllKategoriSampah()
         }
+    }
+
+    private fun isNasabahEmpty(isEmpty: Boolean) {
+        binding.constraintLayout5.isVisible = !isEmpty
+        binding.noNasabah.isVisible = isEmpty
     }
 
     private fun searchFromDb(query: String) {
