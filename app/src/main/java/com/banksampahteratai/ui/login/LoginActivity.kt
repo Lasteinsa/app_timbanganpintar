@@ -1,14 +1,18 @@
 package com.banksampahteratai.ui.login
 
+import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import androidx.core.app.ActivityCompat
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
 import com.banksampahteratai.data.Utility
@@ -40,6 +44,29 @@ class LoginActivity : AppCompatActivity() {
         playAnimation()
         setupAction()
         setupAnimation()
+        setupPermission()
+    }
+
+    private fun setupPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                utility.showDialog(
+                    this@LoginActivity,
+                    "Izinkan Akses",
+                    "Mohon Izinkan Akses Untuk Fitur Bluetooth",
+                    "OK",
+                    "",
+                    false,
+                    fun() {
+                            requestPermissions(arrayOf(Manifest.permission.BLUETOOTH_CONNECT),2022)
+                    }
+                )
+            }
+        }
     }
 
     private fun setupAnimation() {
