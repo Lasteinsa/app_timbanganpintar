@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.banksampahteratai.R
@@ -223,6 +224,13 @@ class ScaleActivity : AppCompatActivity() {
             harga += (it.jumlahSampah * it.hargaSampah)
         }
         resetHarga()
+        if(sampah.isEmpty()) {
+            binding.listSampah.isVisible    = false
+            binding.noTransaction.isVisible = true
+        } else {
+            binding.listSampah.isVisible    = true
+            binding.noTransaction.isVisible = false
+        }
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

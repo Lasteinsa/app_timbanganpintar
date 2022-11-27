@@ -127,8 +127,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="12dp"
-                    android:textColor="@color/white"
                     android:text="@string/sum_sampah"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -151,8 +151,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="12dp"
-                    android:textColor="@color/white"
                     android:text="@string/sum_harga"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -190,4 +190,24 @@
             app:layout_constraintGuide_percent="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/no_transaction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="12dp"
+            android:gravity="center"
+            android:text="Tidak ada sampah"
+            android:textSize="24sp" />
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
