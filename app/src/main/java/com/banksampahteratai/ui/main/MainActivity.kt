@@ -169,6 +169,7 @@ class MainActivity : AppCompatActivity() {
                     res?.data?.forEach {
                         mainViewModel.insertDataSampah(
                             DataSampah(
+                                idSampah       = it?.id.toString(),
                                 idKategori     = it?.idKategori.toString(),
                                 kategori       = it?.kategori.toString(),
                                 jenisSampah    = it?.jenis.toString(),

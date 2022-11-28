@@ -13,6 +13,9 @@ data class DataSampah(
     @ColumnInfo(name = "id")
     var id: Int = 0,
 
+    @ColumnInfo(name = "idSampah")
+    var idSampah: String?,
+
     @ColumnInfo(name = "idKategori")
     var idKategori: String?,
 

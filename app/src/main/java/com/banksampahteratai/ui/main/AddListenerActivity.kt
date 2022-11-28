@@ -98,7 +98,7 @@ class AddListenerActivity : AppCompatActivity() {
         val getKategoriSampah = intent.extras?.getParcelableArrayList<KategoriSampahModel>(KATEGORI_SAMPAH)
 
         getListHargaSampah?.forEach {
-            listHargaSampah.add(SampahModel(it?.id, it?.idKategori, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
+            listHargaSampah.add(SampahModel(it?.id, it?.idSampah, it?.idSampah, it?.kategori, it?.jenis, it?.harga?.toInt(), it?.hargaPusat?.toInt(), it?.jumlah?.toDouble()))
         }
 
         getKategoriSampah?.forEach {

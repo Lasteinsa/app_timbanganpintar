@@ -86,7 +86,8 @@ class ScaleActivity : AppCompatActivity() {
             sampahList?.forEach { dataSampah ->
                 listHargaSampah.add(
                     SampahModel(
-                        dataSampah.id.toString(),
+                        dataSampah.idSampah,
+                        dataSampah.idSampah,
                         dataSampah.idKategori,
                         dataSampah.kategori,
                         dataSampah.jenisSampah,
