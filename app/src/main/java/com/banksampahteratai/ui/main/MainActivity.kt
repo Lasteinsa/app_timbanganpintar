@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.getAllNasabah().observe(this) { nasabahList ->
             if (nasabahList != null) {
                 nasabahAdapter.setListNasabah(nasabahList)
+                isNasabahEmpty(false)
             }
             if(nasabahAdapter.itemCount == 0) {
                 isNasabahEmpty(true)
