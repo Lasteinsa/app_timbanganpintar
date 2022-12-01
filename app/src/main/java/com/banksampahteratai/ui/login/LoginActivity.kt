@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import com.banksampahteratai.R
 import com.banksampahteratai.data.DataPreference
@@ -20,6 +21,7 @@ import com.banksampahteratai.data.api.ApiConfig
 import com.banksampahteratai.data.api.ResponseLogin
 import com.banksampahteratai.databinding.ActivityLoginBinding
 import com.banksampahteratai.ui.main.MainActivity
+import com.bumptech.glide.Glide
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
@@ -39,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
+        Glide.with(this).load(AppCompatResources.getDrawable(this,R.drawable.bgmain)).centerCrop().into(binding.bgMain)
         loginViewModel = LoginViewModel(DataPreference(this))
         utility = Utility()
         playAnimation()
