@@ -1,6 +1,9 @@
 ### Timbangan Pintar
 Android-based smart scale application for [Bank Sampah Teratai](https://bstpinanggriya.com)
 
+Get it on : [Play Store](https://play.google.com/store/apps/details?id=com.banksampahteratai)
+![Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)
+
 #### Feature :
 1. Admin Login
 2. Automatic Scale using Bluetooth from Arduino
